@@ -23,3 +23,8 @@ Then go to app.xaml and remove startupUri=mainWindow the in app.Resources tag ad
 now we can delete then default window (MainWindow.xaml)
 
 use caliburn to do denpendcy injection useing simple container we wiried this up in the bootstrapper class 
+
+Add a table and called user to dbo,table folder and right click go down to table click add entered table name(user) then added IDENTITY to the id field
+we create more rows AuthUserId data typenvarchar 128 becoz the entity framework user db id uses nvarchar 128 we dont want to touch there db (Tim Corey vid 9 sql db 9:50 )
+we add mores and the once that are the same as enitiy we map the data type we added CreatedDate and set data type to datetmie2 that new one datetime is legacy and they couldnt remove it because of that
+we set the default value to getutcdate()because that is easier to convert to local
