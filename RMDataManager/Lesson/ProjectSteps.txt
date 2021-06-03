@@ -1,1 +1,25 @@
 ﻿
+
+
+go to solution and add new project sql serber database 
+Add a folder inside db solution schema name dbo and publishLocations//this is where we have our publish scripts publish to 
+Add 3 folders inside dbo folder caleed views, tables and stored proc
+right click the db solution click publish so we can create a profile then edit and go to browse click local and select mssql local db then click ok that will create a connection string for us
+then type our db name and click save profile as click the publishLocation folder and leave the default name then click save (tim corey vid 5 sql db project 7:35) then click publish this creates a db
+can check the db in sql server object explorer
+
+Add new wpf project to solution call it app name + WPF + GUI incase we add more GUI so that we know the diff
+then right click properties and change assmebly name to the project name i.e retail manager so when the assembly builds the .exe will be called the project name and not app name + WPF + GUI 
+then right click the WPF project and click set as start up project
+Then get rid of lil black debugging box go to tool then click options then scroll to debugging click that and pick genarally then scroll to and unclick show runtime tool in app
+add caliburn.micro to the WPF project in nuget packages
+now add a folder sturcature 3 folders Models, ViewModels (They have to be spelt correct or it wont work I spelled ViewsModels and the caliburn couldnt find the structre)
+and Views we are using the mvvm framework (Models views viewsModel) Views is wot we display to the end user model holds the data the view is 
+going to display and viewModels passes it to the view model is not data acces we hold our data access in a separte lib we slipt our concerns 
+then add a class in viewModel called ShellViewModel all viewModel classes end with viewModel 
+Then add a wondow to the view folder right click it and go to add then click window and call it ShellView we will make this replace the default window that was created for us
+then add a class to then WPF project and call it bootstrapper we uses this to set up caliburn.micro
+Then go to app.xaml and remove startupUri=mainWindow the in app.Resources tag add resourceDic.mergedDic tag then inside that add resourceDic tag and inside that add local:Bootstrapper with key Bootstrapper
+now we can delete then default window (MainWindow.xaml)
+
+use caliburn to do denpendcy injection useing simple container we wiried this up in the bootstrapper class 
