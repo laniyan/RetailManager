@@ -1,7 +1,7 @@
 ﻿
 
 
-go to solution and add new project sql serber database 
+go to solution and add new project sql server database 
 Add a folder inside db solution schema name dbo and publishLocations//this is where we have our publish scripts publish to 
 Add 3 folders inside dbo folder caleed views, tables and stored proc
 right click the db solution click publish so we can create a profile then edit and go to browse click local and select mssql local db then click ok that will create a connection string for us
@@ -27,4 +27,23 @@ use caliburn to do denpendcy injection useing simple container we wiried this up
 Add a table and called user to dbo,table folder and right click go down to table click add entered table name(user) then added IDENTITY to the id field
 we create more rows AuthUserId data typenvarchar 128 becoz the entity framework user db id uses nvarchar 128 we dont want to touch there db (Tim Corey vid 9 sql db 9:50 )
 we add mores and the once that are the same as enitiy we map the data type we added CreatedDate and set data type to datetmie2 that new one datetime is legacy and they couldnt remove it because of that
-we set the default value to getutcdate()because that is easier to convert to local
+we set the default value to getutcdate()because that is easier to convert to local after designing the tables I went to publishLocations folder right clicked RMData.publish click publish then click publish again
+
+we use caliburn to to make our shell view handle multiple views inheriting conductor 
+then add a dockpanel tag and put the grid tag inside it allows us to dock things in diff postions inside then create a menu inside there with to items file and account
+Then create a new view model called loginViewModel and then the login view in the view folder right click then add user control call it LoginView then change the background color 2 white
+we brought down the DesignHeight from 450 to 425 so we can still see the file and account tab from the shell view
+then we made the login view load when the shell view starts using ctor injection for the login view in the shell view class
+Connect tHead login view model to the login view by inheriting Screen in loginViewModel class screen is from caliburn and we have acces to notify() now we have attach the code
+behind the screen like featuure file code and winUI in app forms 
+
+Wire the api to the login screen create a api heleper class in helpers folder created a auth api call() create a method to init a httpclient set the base url in app config 
+by creating a appsettings tag and a add tad wit atrr key = api and value = go to project dataManager right click go to prop the click web and cop project uri and paste as value
+add a ref to config file in the WPFGUI solution right click ref then click aadd ref then select assemblies and type in serach box system.config then tick that box not the
+one with installed at the end then press ok then we get the value using configurationManger class, to get the ReadAsAsync<string>() to work for use to read the response of
+the api we have to add Microsoft.AspNet.WebApi.Client from nuget 
+create a model in model folder called AuthenticatedUser and create prop for what The token api returns 
+create a Interface of the api helper then add it to bootsrapper class we only want one instance of the api helper so we add it to singleton, in loginviewmodel in login()
+this is where we want to call the APIHelper() so when they press login it will call the api
+set multiple apps to start on start go to solution right click go to prop go to start proj and click multiple start proj and select the ones you want to start 
+    (rmdata, wpfgui) then click apply now both widows opens
