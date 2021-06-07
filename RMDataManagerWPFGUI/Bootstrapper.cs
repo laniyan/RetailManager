@@ -9,6 +9,8 @@ using RetailManagerWPFGUI.Views;
 using RetailManagerWPFGUI.ViewModels;
 using System.Windows.Controls;
 using RetailManagerWPFGUI.Helpers;
+using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.Models;
 
 namespace RetailManagerWPFGUI
 {
@@ -30,7 +32,10 @@ namespace RetailManagerWPFGUI
             _container.Instance(_container);/*when every we ask for a somple container instance it will return this instance (_container) the container hold an instance of itself to pass out when ever u
             ask for a container the reason is we may want to get this container in order to manipulate something or change something or get info out of it besides from our ctor */
 
-            _container.Singleton<IWindowManager, WindowManager>().Singleton<IEventAggregator, EventAggregator>().Singleton<IAPIHelper, APIHelper>();/*we want caliburn to handle 1st the window manager handling of bringing windows in and out
+            _container.Singleton<IWindowManager, WindowManager>()
+                .Singleton<IEventAggregator, EventAggregator>()
+                .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IAPIHelper, APIHelper>();/*we want caliburn to handle 1st the window manager handling of bringing windows in and out
             thats is important 2nd is event aggregator this is where we can pass event messaging tru out our app so that one piece can raise an event and different pieces can listen for it and do 
             somethink with it essentially it's how we tire our app together instead of passing data back and forward tru ctor and public methods out event aggregator handles it for us its like a central
             clearinghouse for all events, these are rapid in a singleton beoz we only want one instance of this during the lifecycle of our app (Tim Corey vid 7 dependency inj 10:00 ) we want too connect

@@ -47,3 +47,43 @@ create a Interface of the api helper then add it to bootsrapper class we only wa
 this is where we want to call the APIHelper() so when they press login it will call the api
 set multiple apps to start on start go to solution right click go to prop go to start proj and click multiple start proj and select the ones you want to start 
     (rmdata, wpfgui) then click apply now both widows opens
+
+add error message for incorrect password on top of username added a extra row to login and push down username, password and login btn by changing the grid row value
+add visibility collapse, Visibility="{Binding IsErrorVisible, Converter={StaticResource BooleanToVisibiltyConverter}} this method is built in to the WPF  we set the resource 
+in app.xaml and give it a key static resource means from the resource dictionary BooleanToVisibiltyConverter converts a bool to visible or collapse true means visible false collapse
+create a prop in loginView for is error visible and error message the isErrorVis prop will check to see if the api returns an error if it does then it returns true
+then in the errorMessage prop we use NotifyOfPropChange() to see if IsErrorVisible prop has change and if it does we set to true or false then set error message to = api error message 
+
+create a API library that can be reused over other projects not just this one so we dont want our lib to know anything about our WPF
+delete class 1 then add class that will be our data access xall it SqlDataAccess create a connecr=tion string method make it return from config manager.connectionstring
+that is saved in our app.config we set the value in our method then make it return the string library dont have a web config or app config it depends on the config of the exe
+add couple of methods to get and set data we use dapper to help us do it its a nuget package dapper is a orm object relationship mapper like enitiy framework it dont generate
+code like entity framework its fast and efficient and works well with store procs and theres now maintaning code like u have to with entity
+Create a abstract class in our lib to get data we dont want our UI to know about store proc so it has no idea abt imp only cares about wot its recieving we call the class UserData
+1st create a folder in lib called DataAccess
+create another folder inside dataAccess and call it Internal and inside that create another folder called dataAccess and place the SqlDataAccess.cs inside it and make the class
+internal because we dont want anything outside the lib to use it we use the UserData.cs as the interface to gain access to db all our internal helper methods we put in 
+internal folder
+create a models folder inside the lib project 
+create a stored proc that gets the users first name, last name and email add based on user ID we go to the RMData dbo, stored proc folder add new stored proc and named it spUserLookup
+create a usermodel class in model give it all the props reping the columns in the user table we want to retrive the values from 
+create a method called GetUserById in UserData class
+create a user controller in our RMDataManager controllers folder go to add new controller pick mvc5 write and read actions and add [Authorize]
+at the top of the class then delete all route excpet for the details one change name to GetById make sure the class inherits from apiController coz we created a mvc controller 
+it inherits from controller but this is an api so we want it to inherit from api controller now let it return the getUserById method return
+go to publishLoca and publish our db again so that our stored proc is published 
+go to the user table in the sql db and add a user the one we already created so now we can test the endpoint and see if it brings back the user copy the id from dbo.aspNetUsers
+table (tim corey vid getting user 13 47:00)
+create a connectionstring to our RMdata in web.config bcoz our stored proc is there right click the db RMData and go to prop and then copy connectionstring
+
+Add a new project a class lib to the solution call it RMDesktopUI.Library we create this lib bcoz we dont want use the data manager lib coz it has data access and I dont want to give
+the UI project data access this is for code to support UI i.e talking to api etc 
+add a models folder to the new project lib call it LoggedInUserModel put the prop that we have in user model we dont inherit that class bcoz we want this lib to be independent
+create a folder in new project called API move all Api helper methods from RMDataManagerWPFGUI project into this new folder then delete them from GUI project
+install web api.client and update newtonsoft move AuthenticatedUser to the models folder of this project
+create another method in api class GetLoggedInUserInfo that takes an args of a token add token prop to logged in user model create a interface for LoggedInUser and add it to 
+bootstrapper.cs singleton now we pass the ILoggedInUserModel to the ctor of api helper then map that object to the return of the get LoggedInUser() and the token to wot was
+passed in add Task GetLoggedInUserInfo(string token) to interface
+add GetLoggedInUserInfo() to the LogIn() in RetailManagerWPFGUI ViewModels folder LoginViewModel.cs and pas token u get from the return of the Authenticate()(Tim Corey Vid getting user data 2 14 40:15)
+
+Add sales page in view moedls folder add new class called salesviewmodel and inherit screen then add a user control to views folder call it salesView 

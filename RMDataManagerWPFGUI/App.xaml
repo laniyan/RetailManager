@@ -9,6 +9,7 @@
                     <local:Bootstrapper x:Key="Bootstrapper" /> <!-- this bringing bootstrapper class into resources and when the app launches it will run the methods in that class -->
                 </ResourceDictionary>
              </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
          </ResourceDictionary>
     </Application.Resources>
 </Application>
