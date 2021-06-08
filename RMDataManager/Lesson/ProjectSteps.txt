@@ -86,4 +86,25 @@ bootstrapper.cs singleton now we pass the ILoggedInUserModel to the ctor of api 
 passed in add Task GetLoggedInUserInfo(string token) to interface
 add GetLoggedInUserInfo() to the LogIn() in RetailManagerWPFGUI ViewModels folder LoginViewModel.cs and pas token u get from the return of the Authenticate()(Tim Corey Vid getting user data 2 14 40:15)
 
-Add sales page in view moedls folder add new class called salesviewmodel and inherit screen then add a user control to views folder call it salesView 
+Add sales page in view moedls folder add new class called salesviewmodel and inherit screen then add a user control to views folder call it salesView create the componnents
+on salesViews pages and in salesVeiwModel create all the methods and props fpr the screen
+
+Wire up the event EventAggregator so we can have some interform communication we want to hit the loggin button and that fires up the sale page to do this the sales view has
+to know about the login event so we have to broadcast to the entire WPF app heres a new event and anyone listen for that event can then act apon it so now when log button is hit
+and the user successfull logs in we will broadcast an event that will say hey somebody just logged in we wire up the shellview to listen to that event and then it will close the
+login view page and create a sales page 
+put the EventAggregator in the LoginViewModel ctor then to raise a event us the publish on ui thread method we want this when somebody logs in so do it in the LogIn()
+create a folder in DesktopUI call eventModels inside it create a class called LogOnEvent this will be the key that we pass in our publish on ui thread method for anyone
+who is listening can find what there looking for and you know exactly what its for (breakdown Tim Corey vid event agg 16 15:35 )
+attach listener to shellview event in shellviewmodel class inherit IHandle and pass the logOnEvent class in the <> imp the Ihandel() so we are only listening to that event 
+then reg the listening to log on events using the subscribe()
+create the code we want excuted when event is trigged we want the sales view to appear so we use activateItem() can only have 1 activateItem so that will push the log in page back
+but we want to destroy login page coz that will keep log in page there with the crdentail of last login user as its the obj we have in shellView with all the prop having vaules
+if someone else goes on to log in page it will still have the values from the object so if they just have to press login so we can destroy it in two ways 1 create a clear() 
+and call it in logIn() but if we add something later that sensitive and  forget to do the clear() 2 we can create a new instance of login that will overrite the old one we use
+the container GetInstance() more info in shellViewModel Handle(LogOnEvent message) or we can just create the loginViewModel in the ctor as all viewModels are per request every
+time we call the ShellView class it will give you a new login view model object wiping out any data it once had meaning u cant move back and forth from pages and still have 
+the values u entered there with is correct behaviour for a login page 
+
+
+

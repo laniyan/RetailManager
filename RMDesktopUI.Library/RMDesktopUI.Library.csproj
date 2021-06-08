@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Api\APIHelper.cs" />
     <Compile Include="Api\IAPIHelper.cs" />
+    <Compile Include="EventModels\LogOnEvent.cs" />
     <Compile Include="Models\AuthenticatedUser.cs" />
     <Compile Include="Models\ILoggedInUserModel.cs" />
     <Compile Include="Models\LoggedInUserModel.cs" />
@@ -58,5 +59,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

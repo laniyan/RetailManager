@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using RetailManagerWPFGUI.Helpers;
 using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.EventModels;
 
 namespace RetailManagerWPFGUI.ViewModels
 {
@@ -14,10 +15,12 @@ namespace RetailManagerWPFGUI.ViewModels
         private string _userName;
         private string _password;
         private IAPIHelper _apiHelper;
+        private IEventAggregator _events;
 
-        public LoginViewModel(IAPIHelper apiHelper)
+        public LoginViewModel(IAPIHelper apiHelper, IEventAggregator events )
         {
             _apiHelper = apiHelper;
+            _events = events;
         }
 
         public string UserName
@@ -101,6 +104,14 @@ namespace RetailManagerWPFGUI.ViewModels
 
                 // Capture more info about the user
                 await _apiHelper.GetLoggedInUserInfo(results.Access_Token);
+
+                //fire event
+                _events.PublishOnUIThread(new LogOnEvent());/* we use PublishOnUIThread becoz this makes sure if the thread on top slips of or goes into a background thread etc it makes doubly 
+                                             sure this event will be listen to on the UI thread other Ui can use it without having any cross threading isseus 
+                                             we can pass a string in the args to be publish but thats way to generic to knw wot it represents alot of people may be looking 4 a string
+                                             so instead we create a class with the discreption of what we doing with it it will be empty so we pass an empty instance in now who every
+                                             looking for that we defo only be looking for that that is more strongly typed we use it like a key/trigger looking for the instance of this 
+                                             class where anyone could be looking for a string value (breakdown Tim Corey vid event agg 16 15:35 )*/
             }
             catch (Exception e)
             {
