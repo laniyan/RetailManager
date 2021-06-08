@@ -5,14 +5,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.Models;
 
 namespace RetailManagerWPFGUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
-		private BindingList<string> _products;
+        private IProductEndpoint _productEndpoint;
 
-		public BindingList<string> Products			
+        public SalesViewModel(IProductEndpoint productEndpoint)
+        {
+            _productEndpoint = productEndpoint;
+        }
+
+        protected override async void OnViewLoaded(object view)// this will load the product when the screen is opened we cant do it in the ctor because u cant use await in ctor so we have to use this method 
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+
+        }
+
+        private async Task LoadProducts()
+        {
+            var productList = await _productEndpoint.GetAllProduct();
+            Products = new BindingList<ProductModel>(productList);
+        }
+
+		private BindingList<ProductModel> _products;
+
+		public BindingList<ProductModel> Products			
 		{
 			get { return _products; }
             set

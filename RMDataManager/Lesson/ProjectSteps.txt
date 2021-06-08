@@ -106,5 +106,16 @@ the container GetInstance() more info in shellViewModel Handle(LogOnEvent messag
 time we call the ShellView class it will give you a new login view model object wiping out any data it once had meaning u cant move back and forth from pages and still have 
 the values u entered there with is correct behaviour for a login page 
 
+Get the avaible items for sale from the db and throught the API and into our WPF project
+we need a combine of two tables to populate the items column in salesView inventory and product table we change straigthy and just add acolumn to product table called quantityInStock check for breakdown(Tim corey display product 17 2:00 )
+Create a stroed proc we create a stored proc for everything so we can have that final line of def in our dbthat way we scure our db to only have stored proc access that way we know it almost fully proctected
+from sql injection and accidental modification to the table i.e deleting with out where clasues 
+create a product controller use webApi empty framework
+create a product model in dataManager lib inside models folder
+create a productData class in data access folder in same project in there create the getAllProduct()
+create a class in api folder called productEndpoint we call it this coz its not a full api we are only using it for products add IApiHelper init it in ctor the create a getall() add 
+ApiClient prop to IApiHelper Add productModel to desktop lib then in getAll() then create Interface for product endpoint class then link it in bootstrapper as a PerRequest under container
+create ctor in salesViewModel and put IproductEnpoint then create a overriden OnViewLoaded() and call LoadProducts() this will load the when the page is loading  
+
 
 

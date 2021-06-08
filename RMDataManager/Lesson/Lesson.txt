@@ -36,3 +36,11 @@ Conductor<object>
 
 
 Dapper methods and what they do 
+
+
+
+
+
+
+Tips
+breakdown(Tim corey display product 17 2:00 ) to a db design problem listen to it again

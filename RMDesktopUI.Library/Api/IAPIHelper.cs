@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using RetailManagerWPFGUI.Models;
 
 namespace RMDesktopUI.Library.Api
@@ -8,5 +9,7 @@ namespace RMDesktopUI.Library.Api
         Task<AuthenticatedUser> Authenticate(string userName, string password);
 
         Task GetLoggedInUserInfo(string token);
+
+         HttpClient ApiClient { get; }
     }
 }

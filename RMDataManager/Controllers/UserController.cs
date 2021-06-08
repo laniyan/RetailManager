@@ -9,7 +9,7 @@ using RMDataManager.Library.Internal.Models;
 
 namespace RMDataManager.Controllers
 {
-    [Authorize]
+    [Authorize]//you have to be auth to use these controls 
     public class UserController : ApiController
     {
      

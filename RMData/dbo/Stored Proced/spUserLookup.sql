@@ -3,7 +3,7 @@
 
 AS
 begin
-    set nocount on;
+    set nocount on; --this return no row count when data comes back
 
 	SELECT Id, FirstName, LastName, EmailAddress, CreatedDate
 	from [dbo].[User]
