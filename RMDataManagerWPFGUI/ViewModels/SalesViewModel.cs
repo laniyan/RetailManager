@@ -44,12 +44,30 @@ namespace RetailManagerWPFGUI.ViewModels
             }
 		}
 
+        private ProductModel _selectedProduct;
+
+        public ProductModel SelectedProduct 
+        {
+            get { return _selectedProduct; }
+            set
+            {
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
+
         public string SubTotal
         {
             get
             {
-
-                return "o";
+                decimal subTotal = 0;
+                foreach (var item in Cart)
+                {
+                    subTotal += item.Product.RetailPrice;
+                }
+                return $"{subTotal.ToString("C")}";
             }
         }
 
@@ -71,9 +89,9 @@ namespace RetailManagerWPFGUI.ViewModels
             }
         }
 
-        private BindingList<string> _cart;
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
 
-        public BindingList<string> Cart
+        public BindingList<CartItemModel> Cart
         {
             get { return _cart; }
             set
@@ -83,7 +101,7 @@ namespace RetailManagerWPFGUI.ViewModels
             }
         }
 
-        private int _itemQuantity;
+        private int _itemQuantity = 1;
 
 		public int ItemQuantity
 		{
@@ -92,6 +110,7 @@ namespace RetailManagerWPFGUI.ViewModels
             {
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
 		}
 
@@ -102,7 +121,10 @@ namespace RetailManagerWPFGUI.ViewModels
                 bool output = false;
 
                 //the logic to check if something is selected and if there is an item quantity
-
+                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    output = true;
+                }
                 return output;
             }
         }
@@ -110,7 +132,28 @@ namespace RetailManagerWPFGUI.ViewModels
 
         public void AddToCart()
         {
+            CartItemModel existingItem = Cart.FirstOrDefault(c => c.Product == SelectedProduct);//check to see if we already have the item in the basket
 
+            if (existingItem != null)
+            {
+                existingItem.QuantityInCart += ItemQuantity; //if we have item in basket then just change the quantity amount 
+                Cart.Remove(existingItem);//remove the old version
+                Cart.Add(existingItem);//update it with the new
+            }
+            else
+            {
+                CartItemModel item = new CartItemModel()
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+                Cart.Add(item);
+            }
+            
+            SelectedProduct.QuantityInStock -= ItemQuantity;/*stops you from adding the product multiple times and going over the quantity now if u add the product 5x each with quantity 6 and the total
+                                                             quantity of the product is 20 it will stop u on the last one coz your available quantity has gone down to 2 */
+            ItemQuantity = 0;
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
         public bool CanRemoveFromCart 
@@ -123,12 +166,13 @@ namespace RetailManagerWPFGUI.ViewModels
 
                 return output;
             }
+
         }
 
 
         public void RemoveFromCart()
         {
-
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
         public bool CanCheckOut

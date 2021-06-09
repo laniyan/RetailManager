@@ -117,5 +117,8 @@ create a class in api folder called productEndpoint we call it this coz its not 
 ApiClient prop to IApiHelper Add productModel to desktop lib then in getAll() then create Interface for product endpoint class then link it in bootstrapper as a PerRequest under container
 create ctor in salesViewModel and put IproductEnpoint then create a overriden OnViewLoaded() and call LoadProducts() this will load the when the page is loading  
 
-
-
+Select product and add it to the cart we want to wire that up
+To add to a cart its simple becaise we already have a view model we can wire that up easy create a prop in salesViewmodel type is ProductModel call it selectedProduct in the set put notifyPropChange()
+In salesView go to the textblock that has the item column in listbox and the Selected prop and bind it to the prop now everytime we select something in the items list it will put that model product
+model in or selectedProduct prop
+Add a CartItemModel to the UI lib 
