@@ -10,6 +10,7 @@ using RetailManagerWPFGUI.ViewModels;
 using System.Windows.Controls;
 using RetailManagerWPFGUI.Helpers;
 using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
 
 namespace RetailManagerWPFGUI
@@ -38,6 +39,7 @@ namespace RetailManagerWPFGUI
             _container.Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IConfigHelper, ConfigHelper>()
                 .Singleton<IAPIHelper, APIHelper>();/*we want caliburn to handle 1st the window manager handling of bringing windows in and out
             thats is important 2nd is event aggregator this is where we can pass event messaging tru out our app so that one piece can raise an event and different pieces can listen for it and do 
             somethink with it essentially it's how we tire our app together instead of passing data back and forward tru ctor and public methods out event aggregator handles it for us its like a central

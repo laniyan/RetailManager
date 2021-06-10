@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
 
 namespace RetailManagerWPFGUI.ViewModels
@@ -13,10 +14,12 @@ namespace RetailManagerWPFGUI.ViewModels
     public class SalesViewModel : Screen
     {
         private IProductEndpoint _productEndpoint;
+        private IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEndpoint productEndpoint)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
         {
             _productEndpoint = productEndpoint;
+            _configHelper = configHelper;
         }
 
         protected override async void OnViewLoaded(object view)// this will load the product when the screen is opened we cant do it in the ctor because u cant use await in ctor so we have to use this method 
@@ -62,30 +65,57 @@ namespace RetailManagerWPFGUI.ViewModels
         {
             get
             {
-                decimal subTotal = 0;
-                foreach (var item in Cart)
-                {
-                    subTotal += item.Product.RetailPrice;
-                }
-                return $"{subTotal.ToString("C")}";
+                decimal subTotal = CalculateSubTotal();
+
+                return $"{subTotal:C}";
             }
+        }
+
+        private decimal CalculateSubTotal()
+        {
+            decimal subTotal = 0;
+
+            foreach (var item in Cart)
+            {
+                subTotal += item.Product.RetailPrice;
+            }
+
+            return subTotal;
         }
 
         public string Tax
         {
             get
             {
+                decimal taxAmount = CalculateTax();
 
-                return "o";
+                return $"{taxAmount:C}";
             }
+        }
+
+        private decimal CalculateTax()
+        {
+            decimal taxAmount = 0;
+            decimal taxRate = _configHelper.GetTaxRax()/100;
+
+            foreach (var item in Cart)
+            {
+                if (item.Product.IsTaxable)
+                {
+                    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
+                }
+            }
+
+            return taxAmount;
         }
 
         public string Total
         {
             get
             {
+                decimal total = CalculateSubTotal() + CalculateTax();
 
-                return "o";
+                return $"{total:c}";
             }
         }
 
@@ -154,6 +184,8 @@ namespace RetailManagerWPFGUI.ViewModels
                                                              quantity of the product is 20 it will stop u on the last one coz your available quantity has gone down to 2 */
             ItemQuantity = 0;
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public bool CanRemoveFromCart 
@@ -173,6 +205,8 @@ namespace RetailManagerWPFGUI.ViewModels
         public void RemoveFromCart()
         {
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public bool CanCheckOut

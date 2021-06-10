@@ -118,7 +118,25 @@ ApiClient prop to IApiHelper Add productModel to desktop lib then in getAll() th
 create ctor in salesViewModel and put IproductEnpoint then create a overriden OnViewLoaded() and call LoadProducts() this will load the when the page is loading  
 
 Select product and add it to the cart we want to wire that up
-To add to a cart its simple becaise we already have a view model we can wire that up easy create a prop in salesViewmodel type is ProductModel call it selectedProduct in the set put notifyPropChange()
+To add to a cart its simple because we already have a view model we can wire that up easy create a prop in salesViewmodel type is ProductModel call it selectedProduct in the set put notifyPropChange()
 In salesView go to the textblock that has the item column in listbox and the Selected prop and bind it to the prop now everytime we select something in the items list it will put that model product
-model in or selectedProduct prop
-Add a CartItemModel to the UI lib 
+model in or selectedProduct prop put NotifyOfPropertyChange(() => Cart) and NotifyOfPropertyChange(() => SelectedProduct) this prop value is set by the gui we use it in the gui
+we put SelectedItem="{Binding SelectedProduct}" in the item column
+Add a CartItemModel to the UI lib add 3 prop product, QuantityInCart and displayText
+create a full prop for selected product add 
+create a Cart prop and a private cart field init the cart field with = new BindingList<CartItemModel>(); now the cart prop thats a list of cart items put NotifyOfPropertyChange(() => Cart)
+in CanAddCart prop check to see if selected product quantity is more than item quantity (the quantity the user put) and item quantity is > 0 if is set to true this will enable the add cart btn
+in AddCart() create a var to check if the selected product already exist in the cart if it does then just update quantity so we dont have the same product in the cart more than once then if it isnt
+create a new CartItemModel and init it with the selected product and item quantity  then add it to the cart and take away the item quantity from the product quantity rest the item quantity and
+put  NotifyOfPropertyChange(() => SubTotal); to trigger the subtotal 
+imp the subtotal prop create a local subtotal var then do a foreach of the cart and then subtotal += item in the cart then return subtotal 
+in cart column in the gui we use the cartItemModel prop display to text TextBlock Text="{Binding DisplayText}" that prop just returns product name and item quantity 
+
+Add in the product table a field to see if its taxable set it to 1 (true) for default value add the new field to all the models
+in tax prop inside saleViewModel put logic to determine the tax price 
+create a folder called helper in desktop ui lib and create a class inside it called configHelper this will read configs from the app.config we will put the tax rate value there create a method in there
+that gets the taxRate from config make the method return a decimal we have to convert the app.config value to a decimal from a string use try pasre if it cant throw an exception create an interface
+then add it to bootstrapper class as a singleton and add it to the ctor in the sales veiw model then add the getTaxRate() to the tax prop 
+create a private calculatesubtotal() and calculatetax() put the cal logic in there swap out wot we have in subTotal prop for it add the method to tax prop
+in total prop use the two calculate method plus them against eachother and return the value thats our total amount 
+add  NotifyOfPropertyChange(()) for tax and total to add to cart and remove from cart props 
