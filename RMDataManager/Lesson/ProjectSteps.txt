@@ -140,3 +140,7 @@ then add it to bootstrapper class as a singleton and add it to the ctor in the s
 create a private calculatesubtotal() and calculatetax() put the cal logic in there swap out wot we have in subTotal prop for it add the method to tax prop
 in total prop use the two calculate method plus them against eachother and return the value thats our total amount 
 add  NotifyOfPropertyChange(()) for tax and total to add to cart and remove from cart props 
+
+refactor add foreign keys 1st in inventory table click foreign key on the right click and select add foreign key and enter FK_Inventory_ToProduct our productId in our inventory table maps to our id in 
+product table becoz we dont call it product id in the product table we call it id we have to link it to that productId in this table we do that by adding a ref FOREIGN KEY ([ProductId]) REFERENCES Product (Id) 
+do the same with sales for cashierId which links to user id there a very god reason y user id is a nvarchar(128) (Tim Corey vvid early refactoring 20 9:30) wired up saleDetail table with fk's
