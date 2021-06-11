@@ -148,3 +148,4 @@ Changed the name of the entity framework db from aspnet-RMDataManager-2021060108
 all to ETData go to methods where we use the old values and swap them out i.e public class ApplicationDbContext : IdentityDbContext<ApplicationUser>  { public ApplicationDbContext() : base("ETData", throwIfV1Schema: false)
 {} then run the enable-migrations command in package manager enable-migrations -ProjectName RMDataManager -StartUpProjectName RMDataManager -Verbose  the the updateDatabase command we do this to get ride 
 of our old db the old name on to make our new name one take over
+in shellveiwModel class we get ride of _container and use caliburn Ioc.Get() now we no longer ineed the SimpleContainer dependency 

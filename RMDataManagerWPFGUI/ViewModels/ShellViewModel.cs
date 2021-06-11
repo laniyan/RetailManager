@@ -13,9 +13,10 @@ namespace RetailManagerWPFGUI.ViewModels
        
         private IEventAggregator _event;
         private SalesViewModel _salesVM;
-        private SimpleContainer _container;
+        // private SimpleContainer _container; no longer need coz of Ioc
 
-        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, SimpleContainer container)
+        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM
+            /*SimpleContainer container no longer need coz of Ioc*/)
         {
             
            // ActivateItem(_loginVM);//this will active our login in our shell page 
@@ -28,11 +29,14 @@ namespace RetailManagerWPFGUI.ViewModels
 
             _salesVM = salesVM;
 
-            _container = container;
+            // _container = container; no longer need coz of Ioc
 
-            ActivateItem(_container.GetInstance<LoginViewModel>());/*this gets a new instance of LoginViewModel and activate it everytime the shell ctor is called
+            /* we no longer need _container we can use caliburn Ioc.Get() instead does the same thing with less denpendency
+            ActivateItem(_container.GetInstance<LoginViewModel>());this gets a new instance of LoginViewModel and activate it everytime the shell ctor is called
             and wipes out an old existing ones with all credentials so if anyone calls log in page again they will get a new one and u have to call login page from
              shellveiw thats how we've set it up shellview will control all the views in the system*/
+
+            ActivateItem(IoC.Get<LoginViewModel>());//the same as up top just much better way from caliburn 
         }
 
         public void Handle(LogOnEvent message)// this handles the log on event so when its fired this is executed
