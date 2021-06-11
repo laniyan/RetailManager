@@ -149,3 +149,7 @@ all to ETData go to methods where we use the old values and swap them out i.e pu
 {} then run the enable-migrations command in package manager enable-migrations -ProjectName RMDataManager -StartUpProjectName RMDataManager -Verbose  the the updateDatabase command we do this to get ride 
 of our old db the old name on to make our new name one take over
 in shellveiwModel class we get ride of _container and use caliburn Ioc.Get() now we no longer ineed the SimpleContainer dependency 
+change the item column in thw salesView page to show price and quantity in stock go to the item column in sales view wrap a stackPanel around the textblock set orientation to vertical then underneath
+the texblock create 2 new stackpanel set orientation to horizontal in that stackpanel create two textblock one for the price one for the quantity and bind to Retail price and the other to quantity in stock 
+wrap stackpanel around the textblocks create two textblocks for each element one for text name and other for binding 
+had a bug I have to make sure wen delete a db and setting up a new that the entity db users table Id is the same as my user table id 
