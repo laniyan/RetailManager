@@ -98,13 +98,17 @@ namespace RetailManagerWPFGUI.ViewModels
             decimal taxAmount = 0;
             decimal taxRate = _configHelper.GetTaxRax()/100;
 
-            foreach (var item in Cart)
+            //new way of doing calcu does exact same thing as bottom (foreach) but its clear
+            taxAmount = Cart.Where(c => c.Product.IsTaxable)
+                .Sum(c => c.Product.RetailPrice * c.QuantityInCart * taxRate);
+
+            /*foreach (var item in Cart)
             {
                 if (item.Product.IsTaxable)
                 {
                     taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
                 }
-            }
+            }*/
 
             return taxAmount;
         }
