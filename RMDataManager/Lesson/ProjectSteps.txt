@@ -144,3 +144,7 @@ add  NotifyOfPropertyChange(()) for tax and total to add to cart and remove from
 refactor add foreign keys 1st in inventory table click foreign key on the right click and select add foreign key and enter FK_Inventory_ToProduct our productId in our inventory table maps to our id in 
 product table becoz we dont call it product id in the product table we call it id we have to link it to that productId in this table we do that by adding a ref FOREIGN KEY ([ProductId]) REFERENCES Product (Id) 
 do the same with sales for cashierId which links to user id there a very god reason y user id is a nvarchar(128) (Tim Corey vvid early refactoring 20 9:30) wired up saleDetail table with fk's
+Changed the name of the entity framework db from aspnet-RMDataManager-20210601082611.mdf to EFData so its shorter and easier to rem swapped out defaultConnection the name of db and the catalog value 
+all to ETData go to methods where we use the old values and swap them out i.e public class ApplicationDbContext : IdentityDbContext<ApplicationUser>  { public ApplicationDbContext() : base("ETData", throwIfV1Schema: false)
+{} then run the enable-migrations command in package manager enable-migrations -ProjectName RMDataManager -StartUpProjectName RMDataManager -Verbose  the the updateDatabase command we do this to get ride 
+of our old db the old name on to make our new name one take over
