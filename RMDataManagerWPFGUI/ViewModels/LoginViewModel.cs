@@ -12,8 +12,8 @@ namespace RetailManagerWPFGUI.ViewModels
 {
     public class LoginViewModel : Screen
     {
-        private string _userName;
-        private string _password;
+        private string _userName = "laniyan@hotmail.com";//hardcode login coz we know it works and we dont want to keep entering everytime we test the code
+        private string _password = "1234Qwer;";
         private IAPIHelper _apiHelper;
         private IEventAggregator _events;
 

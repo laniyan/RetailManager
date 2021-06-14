@@ -153,3 +153,35 @@ change the item column in thw salesView page to show price and quantity in stock
 the texblock create 2 new stackpanel set orientation to horizontal in that stackpanel create two textblock one for the price one for the quantity and bind to Retail price and the other to quantity in stock 
 wrap stackpanel around the textblocks create two textblocks for each element one for text name and other for binding 
 had a bug I have to make sure wen delete a db and setting up a new that the entity db users table Id is the same as my user table id 
+
+Post sales info to the db 
+put taxrate key in web.config appsetting tag in RMDatamanager same as how its set in app.config
+send over to our api is the cartItemModel and we only want prop productModel and from that the id with id we can look anything up and quantityIncart from CartItemModel
+create a model to send the data over create it in the desktopui lib in model folder call it saleModel and create a saleDetailModel put to prop in there productId and
+quantity in saleModel create a prop that takes a list of saleDetails call it saleDetails when we do a purchase we will send over just a sales model and that will have a
+list of the saleDetails in it
+in the Checkout() we need to create a sale model and post it to the api
+in CanCheckOut prop we check if cart count is > 0 then set it to true that will enable the checkout btn put notify() for canCheckOut in remove() and Add() when ever
+we remove we need to notify() and when we add we need to notifty as well 
+in salesModel go to saleDetails prop and init an new list object
+init a saleModel in checkOut() create a foreach to loop tru the cart prop and add the items to the saleModel obj now we post this to the api 
+create the api to post the data so create a new api controler called saleController in dataManager project controller folder in that class put the auth attribute 
+now create a front end saleModel in model folder of rmdm lib project coz there is no frontend only code we put it in the rmdm lib and a saleDetailModel put same prop
+as we have in desktop lib although they look the same there not they are used diffrent so we cant just sometimes we may have classes that look the same but aint the
+same so we cant just inherit the class we have to create them twice good breakdown in (Tim Corey vid 21 posting sales data 33:00 )
+create a new class in the api folder desktop ui lib call it saleEndpoint create a ctor in that class for the api helper() this class will call the api to the sale endpoint
+create a PostSale() that takes a saleModel from the ui and eventurlly will make a api post call to the sale table and pass the saleModel via the body
+create a saleEndpoint Interface link it up in bootstrapper class
+create a salesData class in dataManager lib dataAccess folder create a save sale method that takes a saleModel and will take 8 steps we use all these steps 
+bcoz we dont trust the  frontend the frontend could of gave us all this step info so now we are verifying i.e checking at the front and the back
+create a model in dm lib models folder call it saleDetailDBModel which model of the columns in the sale Details table 
+convert the saleModel into a saleDetailDBModel create a new class called saleDbModel in rmdm lib models folder copy the colums from the sale table as props so we can map it
+in productdata create a get product by id method
+create a stored prop to get product by id then publish it
+create a stored prop to insert data to sale table
+create a stored prop to insert data to saleDetail table publish it
+create a stored prop to get cashier by id from sale table publish it
+create a another ConfigHelper class in rmdm lib add the key to appSetting in web cofig in rmdm project make the getTaxes() static this gives us the tax amount in our
+SaleDate class so now we can work out the total price finish of the steps 
+in sale controller inside post() put a saleModel obj in the arg and put a new saleData obj use the saveSale() and pass in the saleMoedl obj and the userId
+in salesViewmodel go to cart prop 

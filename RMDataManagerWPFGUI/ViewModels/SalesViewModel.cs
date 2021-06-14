@@ -15,11 +15,13 @@ namespace RetailManagerWPFGUI.ViewModels
     {
         private IProductEndpoint _productEndpoint;
         private IConfigHelper _configHelper;
+        private ISaleEndpoint _saleEndpoint;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
         {
             _productEndpoint = productEndpoint;
             _configHelper = configHelper;
+            _saleEndpoint = saleEndpoint;
         }
 
         protected override async void OnViewLoaded(object view)// this will load the product when the screen is opened we cant do it in the ctor because u cant use await in ctor so we have to use this method 
@@ -96,7 +98,7 @@ namespace RetailManagerWPFGUI.ViewModels
         private decimal CalculateTax()
         {
             decimal taxAmount = 0;
-            decimal taxRate = _configHelper.GetTaxRax()/100;
+            decimal taxRate = _configHelper.GetTaxRate()/100;
 
             //new way of doing calcu does exact same thing as bottom (foreach) but its clear
             taxAmount = Cart.Where(c => c.Product.IsTaxable)
@@ -190,6 +192,7 @@ namespace RetailManagerWPFGUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         public bool CanRemoveFromCart 
@@ -211,13 +214,23 @@ namespace RetailManagerWPFGUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         public bool CanCheckOut
         {
             get
             {
-                bool output = false;
+                bool output = Cart.Count > 0; //vs said do it this way which is much better belwo is the old way and my way
+
+                /* bool output = false;
+
+                 if (Cart.Count > 0)
+                 {
+                     output = true;
+                 }*/
+
+               // bool o = Cart.Count > 0 ? true : false;
 
                 //the logic to check if something is selected and if there is an item quantity
 
@@ -226,9 +239,20 @@ namespace RetailManagerWPFGUI.ViewModels
         }
 
 
-        public void CheckOut()
+        public async Task CheckOut()
         {
+            SaleModel sale = new SaleModel();
 
+            foreach (var item in Cart)
+            {
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = item.Product.Id,
+                    Quantity = item.QuantityInCart
+                });
+            }
+
+            await _saleEndpoint.PostSale(sale);
         }
 
     }

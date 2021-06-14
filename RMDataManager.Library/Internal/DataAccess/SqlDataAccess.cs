@@ -10,6 +10,7 @@ using Dapper;
 
 namespace RMDataManager.Library.Internal.DataAccess
 {
+    //connection to our db
     internal class SqlDataAccess
     {
         public string GetConnectionString(string name)

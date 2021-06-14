@@ -34,7 +34,8 @@ namespace RetailManagerWPFGUI
                 .Instance(_container) /*when every we ask for a simple container instance it will return this instance (_container) the container hold an instance of itself to pass out when ever u
             ask for a container the reason is we may want to get this container in order to manipulate something or change something or get info out of it besides from our ctor
             so we can use this to new up a class of itself i.e LogInModel logIn = new LogInModel();*/
-                .PerRequest<IProductEndpoint, ProductEndpoint>();
+                .PerRequest<IProductEndpoint, ProductEndpoint>()
+                .PerRequest<ISaleEndpoint, SaleEndpoint>();
 
             _container.Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()

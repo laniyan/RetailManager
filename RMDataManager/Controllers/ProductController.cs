@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Http;
 using RMDataManager.Library.DataAccess;
-using RMDataManager.Library.Internal.Models;
+using RMDataManager.Library.Models;
 
 namespace RMDataManager.Controllers
 {

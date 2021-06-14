@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
-using RMDataManager.Library.Internal.Models;
+using RMDataManager.Library.Models;
 
 namespace RMDataManager.Controllers
 {

@@ -80,10 +80,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfiqHelper.cs" />
     <Compile Include="DataAccess\ProductData.cs" />
     <Compile Include="DataAccess\UserData.cs" />
-    <Compile Include="Internal\Models\ProductModel.cs" />
-    <Compile Include="Internal\Models\UserModel.cs" />
+    <Compile Include="DataAccess\SaleData.cs" />
+    <Compile Include="Models\ProductModel.cs" />
+    <Compile Include="Models\SaleDBModel.cs" />
+    <Compile Include="Models\SaleDetailDBModel.cs" />
+    <Compile Include="Models\SaleDetailModel.cs" />
+    <Compile Include="Models\SaleModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\DataAccess\SqlDataAccess.cs" />
   </ItemGroup>
@@ -91,7 +97,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\RMDesktopUI.Library\RMDesktopUI.Library.csproj">
+      <Project>{6B585C5E-9844-47D6-AC2C-7777436E5B4E}</Project>
+      <Name>RMDesktopUI.Library</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
