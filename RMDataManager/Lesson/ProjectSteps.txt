@@ -154,7 +154,7 @@ the texblock create 2 new stackpanel set orientation to horizontal in that stack
 wrap stackpanel around the textblocks create two textblocks for each element one for text name and other for binding 
 had a bug I have to make sure wen delete a db and setting up a new that the entity db users table Id is the same as my user table id 
 
-Post sales info to the db 
+Post sales info to the db (wiring up both side the frontend and the api sides)
 put taxrate key in web.config appsetting tag in RMDatamanager same as how its set in app.config
 send over to our api is the cartItemModel and we only want prop productModel and from that the id with id we can look anything up and quantityIncart from CartItemModel
 create a model to send the data over create it in the desktopui lib in model folder call it saleModel and create a saleDetailModel put to prop in there productId and
@@ -184,4 +184,16 @@ create a stored prop to get cashier by id from sale table publish it
 create a another ConfigHelper class in rmdm lib add the key to appSetting in web cofig in rmdm project make the getTaxes() static this gives us the tax amount in our
 SaleDate class so now we can work out the total price finish of the steps 
 in sale controller inside post() put a saleModel obj in the arg and put a new saleData obj use the saveSale() and pass in the saleMoedl obj and the userId
-in salesViewmodel go to cart prop 
+
+Updating quantity in cart add and removing items
+create a ui model in the desktop WPFUI project so we can notify change we dont want to do this in the UI lib coz we would have to modify our model and our model maps 
+data from our api so we dont want to do that we call it CartItemDisplayModel put all props init same as CartItemModel but make product type be productDisplayModel 
+then create a new model called productDisplayModel in CartItemDisplay inherit INotifyProp and imp it there and ProductDisplay prop
+Add auto mapper from nuget to WPFUI proj this helps us with model transforamtion between layers bcoz we may be adding changing mulipating the model so its job is to
+take the data from one model and move it over to a diffrernt model where the 2 model are close or hold same data 
+add auto mappper denpendency injection system in configure() pur create new MapperConfiguration obj store it in a var in there config the obj you want to map
+then create the mapper then pass it tru the container for the denpendency injection
+Add mapper to the ctor of salesViewModel in there swap out all productModel for productDisplay same with CartItemModel to CartItemDisplay
+create a mapper in LoadProduct() to map the model we get from the api to the new productDisplay model 
+Take out the hack from addCart() take out the display prop from CartItemModel in UI lib
+reactor config mapper put it in a private method then call th method in config()

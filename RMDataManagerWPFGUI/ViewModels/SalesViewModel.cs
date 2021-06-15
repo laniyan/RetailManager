@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Caliburn.Micro;
+using RetailManagerWPFGUI.Models;
 using RMDesktopUI.Library.Api;
 using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
@@ -16,12 +18,14 @@ namespace RetailManagerWPFGUI.ViewModels
         private IProductEndpoint _productEndpoint;
         private IConfigHelper _configHelper;
         private ISaleEndpoint _saleEndpoint;
+        private IMapper _mapper;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint, IMapper mapper)
         {
             _productEndpoint = productEndpoint;
             _configHelper = configHelper;
             _saleEndpoint = saleEndpoint;
+            _mapper = mapper;
         }
 
         protected override async void OnViewLoaded(object view)// this will load the product when the screen is opened we cant do it in the ctor because u cant use await in ctor so we have to use this method 
@@ -34,12 +38,15 @@ namespace RetailManagerWPFGUI.ViewModels
         private async Task LoadProducts()
         {
             var productList = await _productEndpoint.GetAllProduct();
-            Products = new BindingList<ProductModel>(productList);
+            var products = _mapper.Map<List<ProductDisplayModel>>(productList);/*even dough I didnt map a list of productDisplay auto mapper is intelligent enough to say okay list 
+            well a list of productDisplay it takes the productList and says it knows what a productDisplay is there for each product list is a productModel so it converts each one
+            to a productDisplay its going to map each on individually and put the results into a list and return that list to the product var*/
+            Products = new BindingList<ProductDisplayModel>(products);
         }
 
-		private BindingList<ProductModel> _products;
+		private BindingList<ProductDisplayModel> _products;
 
-		public BindingList<ProductModel> Products			
+		public BindingList<ProductDisplayModel> Products			
 		{
 			get { return _products; }
             set
@@ -49,9 +56,9 @@ namespace RetailManagerWPFGUI.ViewModels
             }
 		}
 
-        private ProductModel _selectedProduct;
+        private ProductDisplayModel _selectedProduct;
 
-        public ProductModel SelectedProduct 
+        public ProductDisplayModel SelectedProduct 
         {
             get { return _selectedProduct; }
             set
@@ -125,9 +132,9 @@ namespace RetailManagerWPFGUI.ViewModels
             }
         }
 
-        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
 
-        public BindingList<CartItemModel> Cart
+        public BindingList<CartItemDisplayModel> Cart
         {
             get { return _cart; }
             set
@@ -168,17 +175,18 @@ namespace RetailManagerWPFGUI.ViewModels
 
         public void AddToCart()
         {
-            CartItemModel existingItem = Cart.FirstOrDefault(c => c.Product == SelectedProduct);//check to see if we already have the item in the basket
+            CartItemDisplayModel existingItem = Cart.FirstOrDefault(c => c.Product == SelectedProduct);//check to see if we already have the item in the basket
 
             if (existingItem != null)
             {
                 existingItem.QuantityInCart += ItemQuantity; //if we have item in basket then just change the quantity amount 
-                Cart.Remove(existingItem);//remove the old version
-                Cart.Add(existingItem);//update it with the new
+                //Hsck
+                //Cart.Remove(existingItem);//remove the old version
+                //Cart.Add(existingItem);//update it with the new
             }
             else
             {
-                CartItemModel item = new CartItemModel()
+                CartItemDisplayModel item = new CartItemDisplayModel()
                 {
                     Product = SelectedProduct,
                     QuantityInCart = ItemQuantity

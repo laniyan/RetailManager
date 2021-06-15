@@ -8,7 +8,9 @@ using Caliburn.Micro;
 using RetailManagerWPFGUI.Views;
 using RetailManagerWPFGUI.ViewModels;
 using System.Windows.Controls;
+using AutoMapper;
 using RetailManagerWPFGUI.Helpers;
+using RetailManagerWPFGUI.Models;
 using RMDesktopUI.Library.Api;
 using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
@@ -28,8 +30,27 @@ namespace RetailManagerWPFGUI
                 "PasswordChanged");
         }
 
+        private IMapper ConfigureAutomapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                //this we knw from the begin how to map a productModel to a ProductDisplay it uses reflection it does it once then store the info thats way its so fast
+                //this creates a configuration
+                cfg.CreateMap<ProductModel, ProductDisplayModel>();
+                cfg.CreateMap<CartItemModel, CartItemDisplayModel>();
+            });
+
+            //create a mapper
+            var output = config.CreateMapper();
+
+            return output;
+        }
+
         protected override void Configure()
         {
+            //Add mapper to dependency injection system
+            _container.Instance(ConfigureAutomapper());//this is a singleton
+
             _container
                 .Instance(_container) /*when every we ask for a simple container instance it will return this instance (_container) the container hold an instance of itself to pass out when ever u
             ask for a container the reason is we may want to get this container in order to manipulate something or change something or get info out of it besides from our ctor
