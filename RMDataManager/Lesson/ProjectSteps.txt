@@ -197,3 +197,8 @@ Add mapper to the ctor of salesViewModel in there swap out all productModel for 
 create a mapper in LoadProduct() to map the model we get from the api to the new productDisplay model 
 Take out the hack from addCart() take out the display prop from CartItemModel in UI lib
 reactor config mapper put it in a private method then call th method in config()
+Wire up the removing cart btn
+Add create a selected Item prop to cart column in SaleView
+Create a SelectedCartItem prop with CartItemDisplay as type to set an item in the cart and is called when selected Item prop in cart colun is triggered
+Create CanRemoveFromCart with logic for when this should be trigged to be on i.e if there is an item selected in cart then we can remove it
+Imp RemoveFromCart() 

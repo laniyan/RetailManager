@@ -69,6 +69,18 @@ namespace RetailManagerWPFGUI.ViewModels
             }
         }
 
+        private CartItemDisplayModel _selectedCartItem;
+
+        public CartItemDisplayModel SelectedCartItem
+        {
+            get { return _selectedCartItem; }
+            set
+            {
+                _selectedCartItem = value;
+                NotifyOfPropertyChange(() => SelectedCartItem);
+                NotifyOfPropertyChange(() => CanRemoveFromCart);
+            }
+        }
 
         public string SubTotal
         {
@@ -180,7 +192,7 @@ namespace RetailManagerWPFGUI.ViewModels
             if (existingItem != null)
             {
                 existingItem.QuantityInCart += ItemQuantity; //if we have item in basket then just change the quantity amount 
-                //Hsck
+                //Hack
                 //Cart.Remove(existingItem);//remove the old version
                 //Cart.Add(existingItem);//update it with the new
             }
@@ -196,7 +208,7 @@ namespace RetailManagerWPFGUI.ViewModels
             
             SelectedProduct.QuantityInStock -= ItemQuantity;/*stops you from adding the product multiple times and going over the quantity now if u add the product 5x each with quantity 6 and the total
                                                              quantity of the product is 20 it will stop u on the last one coz your available quantity has gone down to 2 */
-            ItemQuantity = 0;
+            ItemQuantity = 1;
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
@@ -210,6 +222,10 @@ namespace RetailManagerWPFGUI.ViewModels
                 bool output = false;
 
                 //the logic to check if something is selected and if there is an item quantity
+                if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock > 0)
+                {
+                    output = true;
+                }
 
                 return output;
             }
@@ -219,6 +235,17 @@ namespace RetailManagerWPFGUI.ViewModels
 
         public void RemoveFromCart()
         {
+            SelectedCartItem.QuantityInCart -= 1;
+
+            if (SelectedCartItem.QuantityInCart > 1)
+            {
+                SelectedCartItem.Product.QuantityInStock += 1;//to put the quantity in the stock
+            }
+            else
+            {
+                Cart.Remove(SelectedCartItem);
+            }
+
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
