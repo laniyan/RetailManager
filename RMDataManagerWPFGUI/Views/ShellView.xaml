@@ -9,16 +9,17 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top" FontSize="18">
             <MenuItem Header="_File">
-
+                <MenuItem x:Name="ExitApplication" Header="E_xit" />
+                <!-- _ makes a underscore on the x -->
             </MenuItem>
-            <MenuItem Header="_Account">
-                <MenuItem x:Name="LoginScreen" Header="_Login">
+            <MenuItem Header="_Account" Visibility="{Binding IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                <MenuItem x:Name="LogOut" Header="_Log Out">
 
                 </MenuItem>
             </MenuItem>
         </Menu>
         <Grid>
-<ContentControl x:Name="ActiveItem" Margin="20 5 20 20"/>
+            <ContentControl x:Name="ActiveItem" Margin="20 5 20 20"/>
         </Grid>
     </DockPanel>
 

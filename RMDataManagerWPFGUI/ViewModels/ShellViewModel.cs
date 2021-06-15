@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using RMDesktopUI.Library.EventModels;
+using RMDesktopUI.Library.Models;
 
 namespace RetailManagerWPFGUI.ViewModels
 {
@@ -13,9 +14,11 @@ namespace RetailManagerWPFGUI.ViewModels
        
         private IEventAggregator _event;
         private SalesViewModel _salesVM;
+
+        private ILoggedInUserModel _user;
         // private SimpleContainer _container; no longer need coz of Ioc
 
-        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM
+        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, ILoggedInUserModel user
             /*SimpleContainer container no longer need coz of Ioc*/)
         {
             
@@ -36,13 +39,42 @@ namespace RetailManagerWPFGUI.ViewModels
             and wipes out an old existing ones with all credentials so if anyone calls log in page again they will get a new one and u have to call login page from
              shellveiw thats how we've set it up shellview will control all the views in the system*/
 
+            _user = user;
+
             ActivateItem(IoC.Get<LoginViewModel>());//the same as up top just much better way from caliburn 
+        }
+
+        public bool IsLoggedIn
+        {
+            get
+            {
+                bool output = false;
+
+                if (string.IsNullOrWhiteSpace(_user.Token) == false)
+                {
+                    output = true;
+                }
+
+                return output;
+            }
+        }
+
+        public void ExitApplication()
+        {
+            TryClose();
+        }
+
+        public void LogOut()
+        {
+            _user.LogOffUser();
+            ActivateItem(IoC.Get<LoginViewModel>());
+            NotifyOfPropertyChange(() => IsLoggedIn);
         }
 
         public void Handle(LogOnEvent message)// this handles the log on event so when its fired this is executed
         {
             ActivateItem(_salesVM);// this close the log in page and activate our sales page becoz we can only have 1 item active at a time wen we have the conductor<object>
-
+            NotifyOfPropertyChange(() => IsLoggedIn);
         }
     }
 }

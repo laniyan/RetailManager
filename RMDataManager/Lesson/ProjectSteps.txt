@@ -202,3 +202,16 @@ Add create a selected Item prop to cart column in SaleView
 Create a SelectedCartItem prop with CartItemDisplay as type to set an item in the cart and is called when selected Item prop in cart colun is triggered
 Create CanRemoveFromCart with logic for when this should be trigged to be on i.e if there is an item selected in cart then we can remove it
 Imp RemoveFromCart() 
+
+Reload the saleView once checkout has been done
+create a private ResetSalesViewModel() and create a new cart obj inside it and call the LoadProduct() inside it and Notify() for cancheckout as well call it in the 
+checkout method at the bottom
+Clear subtotal, tax and total we have to add all the notify() for these props to the ResetSales()
+Create a exit tab to close app go to shellView inside MenuItem header='_File' create a MenuItem tag name = exitApplication we can connect this to a method or a prop
+create a ExitApp;ication() in shell view and call the TryClose()
+change a loginbtn to log out button and if log in take away account tab add a visibility attr
+Create a method in LoggedInUserModel prop desktop UI call it LogOffUser() and set all the prop in the class to empty and set CreatedDate to datetime.minValue add the 
+method to interface put the ILoggedInUserModel in the shellViewModel ctor hook up the denpendency injection 
+Create a logOut() and call the LogOffUser() and the ActiveItem() to Get LoginViewModel()
+Create a IsLoggedIn prop of bool type check to is if token is not set to null if it is set prop to false put this prop in the saleView as part of the visibility attr
+Add NotifyOfPropertyChange(() => IsLoggedIn); to LogOut() and Handle()
