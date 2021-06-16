@@ -63,23 +63,36 @@ namespace RMDataManager.Library.DataAccess
 
             sale.Total = sale.SubTotal + sale.Tax;
 
-            //Save the sale model
-            SqlDataAccess sql = new SqlDataAccess();//open the db connection we want this a low as possible in the method coz we want the db open for as lil time as possible
-            sql.SaveData("dbo.spSale_Insert", sale, "RMData");
-
-            // Get the id from the sale mode
-             sale.Id = sql.LoadData<int, dynamic>("spSale_Lookup", new {sale.CashierId, sale.SaleDate}, "RMData").FirstOrDefault();
-
-            //7 Finish filling in the sale detail models
-            foreach (var item in details)
+            //5 Save the sale model
+            using (SqlDataAccess sql = new SqlDataAccess())//open the db connection we want this a low as possible in the method coz we want the db open for as lil time as possible
             {
-                item.SaleId = sale.Id;
+                try
+                {
+                    sql.StartTransaction("RMData");
 
-                //8 Save the sale detail model
-                sql.SaveData("dbo.spSaleDetail_Insert", item, "RMData");
+                    sql.SaveDataInTransaction("dbo.spSale_Insert", sale, "RMData");
+
+                    //6 Get the id from the sale mode
+                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }, "RMData").FirstOrDefault();
+
+                    //7 Finish filling in the sale detail models
+                    foreach (var item in details)
+                    {
+                        item.SaleId = sale.Id;
+
+                        //8 Save the sale detail model
+                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item, "RMData");
+                    }
+
+                    sql.CommitTransaction();
+                }
+                catch
+                {
+                    sql.RollbackTransaction();
+                    throw;//this just throws the original exception
+                }
             }
 
-            
         }
     }
 }

@@ -219,3 +219,15 @@ Add NotifyOfPropertyChange(() => IsLoggedIn); to LogOut() and Handle()
 clear header for when user logs out bcoz we still have the token from last user in the head so in api create the logOfUser() and call the api to clear header method add
 method to interface as well
 Add Api to ShellView add the dependency injection then call the api.LogOffUser() inside of LogOut()
+Create a transaction method we create this because we are doing 2 steps for an operation we are riting to the sale table and to the saleDetail table if the transaction
+breaksdown after its riten to the sale table and doesnt do the other then we have a problem so the transaction methods makes sure both our done and if not i.e only
+one is done then it will roll back that one and cancels the whole transaction sql does sql transaction and normally we should only do our transaction inside sql
+but in our scenario its best to use C# to do the handeling of the transaction (Tim Corey vid 24 SQL Transaction 16:00) its dangours to do it with C# so only do it when
+its best to
+Create the transaction method in SqlDataAccess class and create 5 metohd that will Open connect/start transaction method, save using the transaction, load using the 
+transaction, Close connection/stop transaction method and Dispose
+inherit IDisposable in SqlDataAccess class and imp the method
+In SaleData.cs go to where we created the sqlDataAccess obj and now we can wrap that in a using statement and inside call our startTransaction() and the rest of our 
+5 steps  to wrap our transaction in our new transaction()
+
+
