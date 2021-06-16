@@ -215,3 +215,7 @@ method to interface put the ILoggedInUserModel in the shellViewModel ctor hook u
 Create a logOut() and call the LogOffUser() and the ActiveItem() to Get LoginViewModel()
 Create a IsLoggedIn prop of bool type check to is if token is not set to null if it is set prop to false put this prop in the saleView as part of the visibility attr
 Add NotifyOfPropertyChange(() => IsLoggedIn); to LogOut() and Handle()
+
+clear header for when user logs out bcoz we still have the token from last user in the head so in api create the logOfUser() and call the api to clear header method add
+method to interface as well
+Add Api to ShellView add the dependency injection then call the api.LogOffUser() inside of LogOut()

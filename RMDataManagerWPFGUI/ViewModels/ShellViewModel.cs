@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using RMDesktopUI.Library.Api;
 using RMDesktopUI.Library.EventModels;
 using RMDesktopUI.Library.Models;
 
@@ -18,7 +19,9 @@ namespace RetailManagerWPFGUI.ViewModels
         private ILoggedInUserModel _user;
         // private SimpleContainer _container; no longer need coz of Ioc
 
-        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, ILoggedInUserModel user
+        private IAPIHelper _apiHelper;
+
+        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, ILoggedInUserModel user, IAPIHelper apiHelper
             /*SimpleContainer container no longer need coz of Ioc*/)
         {
             
@@ -40,6 +43,8 @@ namespace RetailManagerWPFGUI.ViewModels
              shellveiw thats how we've set it up shellview will control all the views in the system*/
 
             _user = user;
+
+            _apiHelper = apiHelper;
 
             ActivateItem(IoC.Get<LoginViewModel>());//the same as up top just much better way from caliburn 
         }
@@ -66,7 +71,8 @@ namespace RetailManagerWPFGUI.ViewModels
 
         public void LogOut()
         {
-            _user.LogOffUser();
+            _user.ResetUserModel();
+            _apiHelper.LogOffUser();
             ActivateItem(IoC.Get<LoginViewModel>());
             NotifyOfPropertyChange(() => IsLoggedIn);
         }

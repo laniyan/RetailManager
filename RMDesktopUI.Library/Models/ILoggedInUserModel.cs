@@ -11,6 +11,6 @@ namespace RMDesktopUI.Library.Models
         DateTime CreatedDate { get; set; }
         string Token { get; set; }
 
-         void LogOffUser();
+         void ResetUserModel();
     }
 }
