@@ -43,6 +43,7 @@ namespace RMDataManager.Library.Internal.DataAccess
 
         private IDbConnection _connection;
         private IDbTransaction _transaction;
+        private bool isClosed;
 
         //Open connect/start transaction method
         public void StartTransaction(string connectionStringName)
@@ -54,6 +55,8 @@ namespace RMDataManager.Library.Internal.DataAccess
             _connection.Open();
 
             _transaction = _connection.BeginTransaction();// this starts of the connection
+
+            isClosed = false;
 
         }
 
@@ -84,6 +87,8 @@ namespace RMDataManager.Library.Internal.DataAccess
         {
             _transaction?.Commit();//the ? are null check meaning if the obj (transaction) is null then it wont do the work so we can call this multiple times coz if its null it will skip it
             _connection?.Close();
+
+            isClosed = true;
         }
 
         //Close connection/stop transaction method
@@ -92,6 +97,8 @@ namespace RMDataManager.Library.Internal.DataAccess
         {
             _transaction?.Rollback();
             _connection?.Close();
+
+            isClosed = true;
         }
 
         //Dispose
@@ -99,7 +106,15 @@ namespace RMDataManager.Library.Internal.DataAccess
           imp with our own close()*/
         public void Dispose()
         {
-            CommitTransaction();//this closes the transaction and the connection
+            if (!isClosed)
+            {
+                CommitTransaction(); //this closes the transaction and the connection
+            }
+
+            //no matter what happens we have to always set these to close once this method has been called just a 2nd safey
+            _transaction = null;
+            _connection = null;
+            
         }
     }
 }

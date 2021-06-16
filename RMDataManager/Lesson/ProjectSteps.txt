@@ -227,7 +227,13 @@ its best to
 Create the transaction method in SqlDataAccess class and create 5 metohd that will Open connect/start transaction method, save using the transaction, load using the 
 transaction, Close connection/stop transaction method and Dispose
 inherit IDisposable in SqlDataAccess class and imp the method
-In SaleData.cs go to where we created the sqlDataAccess obj and now we can wrap that in a using statement and inside call our startTransaction() and the rest of our 
-5 steps  to wrap our transaction in our new transaction()
+In SaleData.cs go to where we created the sqlDataAccess obj and now we can wrap that in a using statement that will call our version of dispose() and inside call our
+startTransaction() and the rest of our 5 steps  to wrap our transaction in our new transaction()
 
+Fix Transaction bug
+we have a commitTransaction() which commits and closes the connection and we have a Dispose() which calls the CommitTransaction() so if we call the commitTrans() and
+then the Dispose() the commit gets called twices the second time it will have already done the commit so it will throw an ex cause it cant do the same commit twice
+we do this when we use the using statement and inside it we call the sql.CommitTransaction thats how exposued this bug
+to fix create a private var bool call it isClosed use it as a trigger in the StartTrans() set it to false at the end meaning its open then at the end of commitTrans()
+and rollBack() set it to true and in dispose wrap the commitTrans() in a if
 
