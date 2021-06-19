@@ -58,7 +58,7 @@ create a API library that can be reused over other projects not just this one so
 delete class 1 then add class that will be our data access xall it SqlDataAccess create a connecr=tion string method make it return from config manager.connectionstring
 that is saved in our app.config we set the value in our method then make it return the string library dont have a web config or app config it depends on the config of the exe
 add couple of methods to get and set data we use dapper to help us do it its a nuget package dapper is a orm object relationship mapper like enitiy framework it dont generate
-code like entity framework its fast and efficient and works well with store procs and theres now maintaning code like u have to with entity
+code like entity framework its fast and efficient and works well with store procs and theres no maintaning code like u have to with entity
 Create a abstract class in our lib to get data we dont want our UI to know about store proc so it has no idea abt imp only cares about wot its recieving we call the class UserData
 1st create a folder in lib called DataAccess
 create another folder inside dataAccess and call it Internal and inside that create another folder called dataAccess and place the SqlDataAccess.cs inside it and make the class
@@ -237,3 +237,18 @@ we do this when we use the using statement and inside it we call the sql.CommitT
 to fix create a private var bool call it isClosed use it as a trigger in the StartTrans() set it to false at the end meaning its open then at the end of commitTrans()
 and rollBack() set it to true and in dispose wrap the commitTrans() in a if
 
+creating store proc to view and add inventory and endpoints for that data
+create verious store prop GetInventory gets a;; the existing inventory, InsertInventory add a new inventory record, GetProducts gets all of the products from inventory
+letting us knw wots low and wot is plenty we already have this method, GetSales gets a summary of sales ltes the manager to see wots selling and whats not
+Create the GetInventory we will start by doing a bottom up apporach starting with the db 1st finishing with the GUI 
+create a store proc spInventory_GetAll and create a store proc spInventory_Insert that takes in 4 args that will be the values we want to insert into the table 
+create a store proc spSale_SaleReport we will be joining tables to get all the info we want we join the user table with the sale table via the chasier id and id and
+then select the rows we want to see from both tables publish for all the store proc
+Create a method in data acces that will call the store proc lets start with the GetSaleReport that will return saleReportModel list that we will create in the models 
+folder that will have the prop of all the select values in the store proc in the GetSaleReport() create a SqlDataAccess obj and use the LoadData() this is the one we create
+ourself this same metohd we get from entity framework but we created our as Tim doesnt like leaning on entity framework so we have a load and save method to the db
+now create an Inventory data access in data access folder and create a getInventory() that returns a InventoryModel that we create in models like on top then create 
+a SaveInventoryRecord()
+now we move to the next level up which is the API which lives in the controller folder in RMDataManager 
+create a GetSale() that returns a list of SaleReportModel in SaleController that calls the Saledata mehtod getSaleReport() put [Route("GetSalesReport")] on top of it
+Now create an Inventory Controller put Authorize attri on top and call the inventory data methods imp both in there to get inventory and insert
