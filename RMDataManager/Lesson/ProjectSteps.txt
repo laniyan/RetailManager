@@ -252,3 +252,14 @@ a SaveInventoryRecord()
 now we move to the next level up which is the API which lives in the controller folder in RMDataManager 
 create a GetSale() that returns a list of SaleReportModel in SaleController that calls the Saledata mehtod getSaleReport() put [Route("GetSalesReport")] on top of it
 Now create an Inventory Controller put Authorize attri on top and call the inventory data methods imp both in there to get inventory and insert
+
+lockdown user roles
+add roles in the Entity Table dbo.aspNetUserRoles the ef db dont auto create a guid for the role table so we have to create a new sql script to do so so right click on
+EFData and click new query then create an insert query to insert new roles in Roles table add 3 roles chasier, manager and admin and use the NEWID() in front of each 
+values i.e INSERT INTO dbo.AspNetRoles (Id, [Name]) Values (NEWID(), 'Chasier') then click the run btn not the normal play btn there is one on the left hand corner
+or just rite click and click execute 
+Inventory is the things we have put in the warehouse the product list is what products we have and whats the total quantity so if we bought 50 iron and already have 
+10 in the warehouse the product table will say 60 iron in total
+set roles on apis us the Roles prop in authorize and set it to the role name we set the roles for what controllers the users are allowed to use
+set product controller to Cashier set sale controller API method Post to cashier and set the GwetSaleReport() to admin, manager set Inventory controller method Get to
+Admin, Manager and set Post() to Adimn

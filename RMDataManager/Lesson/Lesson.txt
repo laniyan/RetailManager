@@ -39,8 +39,19 @@ Dapper methods and what they do
 
 
 
+//assigning roles
+[Authorize(Roles = "Cashier")]//this is assigning one role 
 
+[Authorize(Roles = "Cashier, Admin")]// the , separte means or so Cashier || Admin
 
+[Authorize(Roles = "Cashier")]
+[Authorize(Roles = "Admin")]//stack on top this means && you have to have both roles to access this 
+
+[AllowAnonymous]//means u dont have to be auth for this action even if the whole controller is auth 
+
+RequestContext.Principal.IsInRole("Admin")//returns a bool check to see if the user has this role u can use this with an if() so if admin and manager both how permissions
+for a method but we want to give admin more info then we just wrapp this in an if and rite the code inside it i.e print every detail elseif manager print only clients
+and staff details i.e (Tim corey vid 27 adding roles to api 32:00)
 
 Tips
 breakdown(Tim corey display product 17 2:00 ) to a db design problem listen to it again
