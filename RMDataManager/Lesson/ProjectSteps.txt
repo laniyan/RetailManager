@@ -263,3 +263,14 @@ Inventory is the things we have put in the warehouse the product list is what pr
 set roles on apis us the Roles prop in authorize and set it to the role name we set the roles for what controllers the users are allowed to use
 set product controller to Cashier set sale controller API method Post to cashier and set the GwetSaleReport() to admin, manager set Inventory controller method Get to
 Admin, Manager and set Post() to Adimn
+
+Handle users permissions error if user enters page and dont have permissions
+Go to salesViewModel.cs put a try catch in method OnViewLoaded around await LoadProducts() now we want to handel the ex with a message to the user in wpf we would 
+usely use window.messagebox() we aint using that coz that breaks MvvM because the controller should not be doing UI stuff we need a MvvM friendly message box so we create 
+one in ViewModels folder inside RMdestop UI inherit Sceen which comes from caliburn and micro create 2 prop one called header for the header of the error message
+and message where the full message will be then create a updateMessage() that takes an arg of header and message then set the args to = the props then set a notify()
+for both header and message then create a close method to close the box now create a view from user controller wpf in view folder in there create a stackPanel and two 
+textblock with the names of the props we just made and a button tag where the name = close() we dont want one copy of the error message we want instances 
+in SalesViewModel ctor inject statusInfiViewModel in the catch use the UpdateMessage and set the header and the message then use the widown() showdialog this
+makes you have to deal with the message box 1st you stash or hide it you have to deal with it in the args passing status, null ,null thats null for context and settings
+create a dynamic list of settings from a expandoObject use th WindowStartUpLocation

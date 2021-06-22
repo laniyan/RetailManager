@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using AutoMapper;
 using Caliburn.Micro;
 using RetailManagerWPFGUI.Models;
@@ -19,19 +21,48 @@ namespace RetailManagerWPFGUI.ViewModels
         private IConfigHelper _configHelper;
         private ISaleEndpoint _saleEndpoint;
         private IMapper _mapper;
+        private StatusInfoViewModel _status;
+        private IWindowManager _window;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint, IMapper mapper)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint, IMapper mapper, StatusInfoViewModel status, IWindowManager window)
         {
             _productEndpoint = productEndpoint;
             _configHelper = configHelper;
             _saleEndpoint = saleEndpoint;
             _mapper = mapper;
+            _window = window;
         }
 
         protected override async void OnViewLoaded(object view)// this will load the product when the screen is opened we cant do it in the ctor because u cant use await in ctor so we have to use this method 
         {
             base.OnViewLoaded(view);
-            await LoadProducts();
+
+            try
+            {
+                await LoadProducts();
+            }
+            catch (Exception ex)
+            {
+                dynamic settings = new ExpandoObject();
+                settings.WindowStarupLocation = WindowStartupLocation.CenterOwner;
+                settings.ResizeMode = ResizeMode.NoResize;
+                settings.Title = "System Error";
+
+                if (ex.Message == "Unauthorized")
+                {
+                    _status.UpdateMessage("Unatuhorized Access", "You go not have permission to interact with the sales");
+                    _window.ShowDialog(_status, null, null);//thats null for context and settings
+
+                }
+                else
+                {
+                    _status.UpdateMessage("Fatal Exceptions", ex.Message);
+                    _window.ShowDialog(_status, null, null);
+                }
+
+               TryClose();
+            }
+
 
         }
 
