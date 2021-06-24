@@ -56,6 +56,7 @@ namespace RetailManagerWPFGUI
             ask for a container the reason is we may want to get this container in order to manipulate something or change something or get info out of it besides from our ctor
             so we can use this to new up a class of itself i.e LogInModel logIn = new LogInModel();*/
                 .PerRequest<IProductEndpoint, ProductEndpoint>()
+                .PerRequest<IUserEndpoint, UserEndpoint>()
                 .PerRequest<ISaleEndpoint, SaleEndpoint>();
 
             _container.Singleton<IWindowManager, WindowManager>()

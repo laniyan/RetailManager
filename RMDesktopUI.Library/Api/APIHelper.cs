@@ -89,7 +89,7 @@ namespace RMDesktopUI.Library.Api
                     _loggedInUser.LastName = result.LastName;
                     _loggedInUser.EmailAddress = result.EmailAddress;
                     _loggedInUser.CreatedDate = result.CreatedDate;
-                    _loggedInUser.Token = result.Token;
+                    _loggedInUser.Token = token;
                 }
                 else
                 {

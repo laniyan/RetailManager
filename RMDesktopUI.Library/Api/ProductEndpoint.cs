@@ -10,8 +10,8 @@ namespace RMDesktopUI.Library.Api
 {
     public interface IProductEndpoint
     {
-        Task<List<ProductModel>> GetAllProduct() // we already have the brearer token and wot not bcoz its the same api
-            ;
+        Task<List<ProductModel>> GetAllProduct(); // we already have the brearer token and wot not bcoz its the same api
+
     }
 
     public class ProductEndpoint : IProductEndpoint

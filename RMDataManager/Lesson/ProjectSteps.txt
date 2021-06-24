@@ -238,7 +238,7 @@ to fix create a private var bool call it isClosed use it as a trigger in the Sta
 and rollBack() set it to true and in dispose wrap the commitTrans() in a if
 
 creating store proc to view and add inventory and endpoints for that data
-create verious store prop GetInventory gets a;; the existing inventory, InsertInventory add a new inventory record, GetProducts gets all of the products from inventory
+create verious store prop GetInventory gets all the existing inventory, InsertInventory add a new inventory record, GetProducts gets all of the products from inventory
 letting us knw wots low and wot is plenty we already have this method, GetSales gets a summary of sales ltes the manager to see wots selling and whats not
 Create the GetInventory we will start by doing a bottom up apporach starting with the db 1st finishing with the GUI 
 create a store proc spInventory_GetAll and create a store proc spInventory_Insert that takes in 4 args that will be the values we want to insert into the table 
@@ -273,4 +273,21 @@ for both header and message then create a close method to close the box now crea
 textblock with the names of the props we just made and a button tag where the name = close() we dont want one copy of the error message we want instances 
 in SalesViewModel ctor inject statusInfiViewModel in the catch use the UpdateMessage and set the header and the message then use the widown() showdialog this
 makes you have to deal with the message box 1st you stash or hide it you have to deal with it in the args passing status, null ,null thats null for context and settings
-create a dynamic list of settings from a expandoObject use th WindowStartUpLocation
+create a dynamic list of settings from a expandoObject use the WindowStartUpLocation
+
+Create a screen that will show who has rite to use the app (signed up or reg) and if they are what permissions do they have
+Create a get all user() in userControlller inside it create a applicationDbContext obj create a applicationUser genric UserStore obj place the context obj in there  
+create a applicationUser genric userManager obj place the userStore obj in there then use that obj to use the User.ToList() to get all the users wrapp all of this in using{}
+use the appDbContext method Roles.ToList() to get all users roles
+create a applicationUserModel in RMDataManager project model folder to map the values we want to retrive from roles and user
+create a foreaach to loop tru userNanager obj a list full of users inside the foreach create a applicationUserModel oj and do an obj init for user id and email and 
+another nested foreach to add to the dict in the AppUserModel prop for the role
+create a user endpoint in desktop ui lib and a user model, inside the endpoint create a GellAll that returns a task list of userModel make userModel that maps appUserModel but this is
+the desktop version and init the dict in the class in the getAll() call the GetAllUsers api and create an interface of the userEndpoint then add the interface to
+bootsrap container
+Now we have all that in place we can start working with our data create a viewModel call it userDisplayViewModel that inherits Screen create a LoadUsers(), a 
+public BindingList<UserModel> Users prop and OnViewLoaded(object view) which haves the unauth error exception
+create a UserDisplayView.xaml copy and paste everything from sale page and then modify it to how we want call it User Administration
+we dont want to have aload of roles under our email specifing what roles we have instead we want to create a comma separted list of our roles to do that in  UserModel 
+we create a prop called RoleList and make it return a comma separted list by using Join() and Linq
+create a user management tab in shell view page then add the method in shell view model that will activate Item using IoC.Get() genric method 
