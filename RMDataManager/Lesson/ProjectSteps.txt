@@ -291,3 +291,11 @@ create a UserDisplayView.xaml copy and paste everything from sale page and then 
 we dont want to have aload of roles under our email specifing what roles we have instead we want to create a comma separted list of our roles to do that in  UserModel 
 we create a prop called RoleList and make it return a comma separted list by using Join() and Linq
 create a user management tab in shell view page then add the method in shell view model that will activate Item using IoC.Get() genric method 
+
+Create some endpoints for our user api control
+create an endpoint to get all roles we 1st create the GetAllRoles() in the controler 
+create an post endpoint that addes a role to a user and one that takes a role from a user create a model to pass in as the body call it UserRolePairModel create the two 
+prop of the attr thats needed to remove and add a role via entity db (UserId and RoleName) becoz u cant delete or add a role to someone without knowing who they r
+Now add all same methods to the userEndpoint in UI Lib
+Update the IUserEndpoint 
+Use the enpoints in the WPF

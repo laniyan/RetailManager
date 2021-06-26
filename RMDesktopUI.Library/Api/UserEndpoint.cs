@@ -33,14 +33,47 @@ namespace RMDesktopUI.Library.Api
             }
         }
 
-        /*public async Task AddUserToRole(string userId, string roleName)
+        public async Task<Dictionary<string, string>> GetAllRoles()
         {
-            var data = new {userId, roleName};
-
-            using (HttpResponseMessage response = await _apiHelper.ApiClient.PutAsync("/api/User/Admin"))
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync("/api/User/Admin/GetAllRoles"))
             {
-                
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsAsync<Dictionary<string, string>>();
+                    return result;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
             }
-        }*/
+        }
+        public async Task AddUserToRole(string userId, string roleName)
+        {
+            var data = new { userId, roleName };//this = what the user passes in the args
+
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("/api/User/Admin/AddRole", data))//PostAsJsonAsync allow us to pass an annyomus obj
+            {
+                if (response.IsSuccessStatusCode == false)
+                {
+                    throw new Exception(response.ReasonPhrase);//if this dont work thow ex else exit method
+
+                }
+            }
+        }
+
+        public async Task RemoveUserFromRole(string userId, string roleName)
+        {
+            var data = new { userId, roleName };
+
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsJsonAsync("/api/User/Admin/RemoveRole", data))
+            {
+                if (response.IsSuccessStatusCode == false)
+                {
+                    throw new Exception(response.ReasonPhrase);
+
+                }
+            }
+        }
     }
 }

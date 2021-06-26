@@ -62,5 +62,51 @@ namespace RMDataManager.Controllers
             return output;
         }
 
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("api/User/Admin/GetAllRoles")]
+        public Dictionary<string, string> GetAllRoles()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                //convert the roles into a dict and set the key to the role id and the value to the role name
+                var roles = context.Roles.ToDictionary(r => r.Id, r => r.Name);
+
+                return roles; 
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("api/User/Admin/AddRole")]
+        public void AddARole(UserRolePairModel pairing)//coz its a post u only send in one obj i.e a body
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+
+                userManager.AddToRole(pairing.UserId, pairing.RoleName);
+
+            }
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("api/User/Admin/RemoveRole")]
+        public void RemoveARole(UserRolePairModel pairing)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+
+                userManager.RemoveFromRole(pairing.UserId, pairing.RoleName);
+
+            }
+        }
+
     }
 }

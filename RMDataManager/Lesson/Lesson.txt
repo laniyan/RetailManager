@@ -5,6 +5,15 @@ if you have a text box field in a from and you make the prop on the code side = 
 to the user saying only enter num outlining the box in red this is how they handel different types even if a textbox return string if the wired up prop is a diff data type
 it will only let u enter what can be converted to that type I believe caliburn does the converions under the hood
 
+
+problem we run into With Caliburn and Micro
+
+had a prop that use to be called AvailableRoles in veiwModel and on the view but coz caliburn and micro have a special naming convention so the view couldnt fire of 
+the event so we had to change it to SelectedAvailableRole one of the rules it has to be singular coz the view is giving plural its expect a singular prop to come 
+to it so it looks for a singular naming convention so we change the name of the prop
+i.e in ViewModel UserDisplayViewModel prop SelectedAvailableRole
+
+
 Caliburn Micro methods and what they do
 
 EventAggregator 

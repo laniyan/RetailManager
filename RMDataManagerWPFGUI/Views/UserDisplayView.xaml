@@ -34,7 +34,7 @@
         <!-- Column 0 -->
         <TextBlock Text="Users" Grid.Row="1" Grid.Column="0"></TextBlock>
         <ListBox x:Name="Users" Grid.Row="2" Grid.Column="0" 
-                 MinHeight="200" MinWidth="150">
+                 MinHeight="200" MinWidth="150" SelectedItem="SelectedUser">
             <!--The Name attr in list box is where you link ur prop/method with call it the same as prop and 
             method and it will trigger that it has to be in a list.box tag if the return value is a
             list/collection and below in the listbox.itemtemp is where you use the props of the
@@ -50,6 +50,21 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-  
+
+        <!-- Column 1 -->
+        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Margin="20 0 0 0">
+            <TextBlock x:Name="SelectedUserName" Margin="0 0 0 10" />
+            <TextBox Text="Current Roles" />
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10" >
+                <ListBox x:Name="UserRoles" />
+                <Button x:Name="RemoveSelectedRole" Content="Remove" Margin="5 0 0 0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <ComboBox x:Name="AvailableRoles" />
+                <Button x:Name="AddSelectedRole" Content="Add Role" Margin="5 0 0 0" />
+                <!-- comboBox is a drop down list-->
+            </StackPanel>
+        </StackPanel>
+
     </Grid>
 </UserControl>
