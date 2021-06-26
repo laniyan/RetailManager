@@ -337,3 +337,17 @@ Run app to see it still works coz it should, we ran into a problem a small probl
 we had to add the package to that project i.e upgrade it normally we would just change it in this project to match the other project but we couldnt coz that projects
 version was to old we couldnt get it in this project so we have just added a new nuget package to a project that we haven't changed over to .Net 
 core yet so we made an modification to a existing system and thats not ideal 
+
+Upgrade Backend class lib to .Net Standards we do into .Net Standard so we can upgrading in stages and keep our app working bcoz .Net standard works with both 
+framework and core
+In API folder go to RMDataManger lib click package.config and see the dependencies and we need to check our references we should of done that when we did the 1st 
+convertion as well coz if we have any references to any other projects we need to bring them over as well we do the same proccess as up top unload project edit
+csproj and all same steps dont need to worry about the microsoft packages in package.config but we have it copied in a note pad just incase the new framework 
+dont have it init
+to stop auto genration of assembly info go to csproj and add <GenerateAssemblyInfo>false</GenrateAssemblyInfo> sqlClient didnt came over with .Net standard so we 
+have to add that as well via nuget and config manager again and we also added dapper as well as that was the one dependencie in package.config that wasnt microsoft
+and our app dependens on we ran into another problem when trying to run the app our dapper wasnt found so we had to install it in the RMDataManager project again
+this isnt something we really want to do but now we found out what the problem is it is not bringing over the dependent dll's that it needs to when we 
+are building our library its saying i'm going to expect that the dapper and sql.data.client dll will be in the bin directory for our .Net Framework project and its
+not so whats happening is its saying I cant find this file therefore you have to install them on the RMDataManger project 
+.Net Standard and Core dont read package.config like Framework does
