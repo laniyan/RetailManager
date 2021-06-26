@@ -299,3 +299,41 @@ prop of the attr thats needed to remove and add a role via entity db (UserId and
 Now add all same methods to the userEndpoint in UI Lib
 Update the IUserEndpoint 
 Use the enpoints in the WPF
+
+
+
+***********************************************************************.NET CORE************************************************************************************
+
+Microsoft have a tool that will look tru our whole app and say which ones are upgradeable which ones have to be changed with ones are incompatible and so on but 
+Tim dont like it he says its a lil bit off a overload it makes it even more intimidating to upgrade even a simple app and if its a complex app its really just too
+much sometimes at least it feels that way so Tim just upgrades and see what breaks we always have souce control to roll back if we need
+We should knw what our dependencies are in our project we are upgrading so we have a few dependencies in our wpf class Lib and they all have to do with nuget
+whuch are microsoft.AspNet.WebApi.Client and Newtonsoft.json so we have to make sure they are compatible with upgrade to .Net core or I would have to find something
+else to use and swap them out another thing is package.config that where the packages live in .Net core your package.config file is merged into your csproj file 
+Tim dont want to do it coz of what we do in the next set  
+Next step edit csproj file right click it and click edit but we can just do that for a .Net Framework one bcoz it classes it as live so we have to unload the project
+to make any changes to it that takes it offline so now we can delete everything in there but ti be on the safe size copy it to a note pad just incase theres somink 
+we might need we can delete everything bcoz we didnt migrate our packages in there if we did then we would need to keep them in there coz we cant delete our packages
+we need them 
+Edit csproj file this is the biggest part of upgrading to .Net core or .Net standards
+Create a new csproj file layout (Must get Tim Corey Conversion tips PDF) strat with Project tag and so on i.e in RMDesktop UI lib csproj save it then close it we
+have to close it coz it will not reload project without closing 1st then reload csproj now we have the abilty to edit csproj file without having to unload it
+Next Step if we ggo Nuget packages the only one that will be installed is NETStandard.lib we could add them str8 back because we know what they are coz there still
+in our packages.config thats why we left them there but 1st Tim wants to build to make sure he knows where his errors are which should come from not having them 
+packages so right click project and click build we get Error CS0579: Duplicate 'System.Reflection.AssemblyCompanyAttribute' attribute (14, 12) .Net Framework auto
+builds an assembly info section in our project under properties in a class called assemblyInfo where as .Net core builds it on the fly so now we have 2 in order to
+not have to we have to either delete the assembly file or set it to not generated assembly info good breakdownn of how it happens and when to choose what option
+in (Tim Corey Vid 32 Upgrading to .NET Frontend 13:30) we deleted the class theen we build again we got 11 errors we added one package 1st to see the some error 
+drop the Asp.NetWebApi copy it from package.cong and paste it in nuget package and you can see in the denpendencies section if its compatible with .Net Standards 
+which it is then install it now build again that took it down to 3 error we had a lot of denpen that our app didnt use so going tru the errors and seeing what they
+are and what dependencies they need will hepl only add the ones that are being used now we have to add system.config.configManager this isit in our package.config 
+because it came with the .Net Framework now microsoft have taken a lot of things out of .Net core and standards and made them nuget packages instead coz it wants 
+to stop blouting coz u have everything and u only use 20% so now what everyelse you need you can just add it as a package instead of built in so when migrating
+there going to be things missing that you will have to research for rebuild again now we have 0 errors we dont need json newton thats what we just found out and 
+thats now bcoz it comes as part of webApi so we no longer need it another reason why we add the packages in one by one and see the errors we can delete the 
+package.config file and we can delete app.config config tag as well as that is all set for newton soft json we can still use app.config with core and standard
+they kept that for backwards compatiablity 
+Run app to see it still works coz it should, we ran into a problem a small problem the system.config.configManager is clashing with the system.config.configManager in WPFGUI so
+we had to add the package to that project i.e upgrade it normally we would just change it in this project to match the other project but we couldnt coz that projects
+version was to old we couldnt get it in this project so we have just added a new nuget package to a project that we haven't changed over to .Net 
+core yet so we made an modification to a existing system and thats not ideal 
