@@ -350,4 +350,46 @@ and our app dependens on we ran into another problem when trying to run the app 
 this isnt something we really want to do but now we found out what the problem is it is not bringing over the dependent dll's that it needs to when we 
 are building our library its saying i'm going to expect that the dapper and sql.data.client dll will be in the bin directory for our .Net Framework project and its
 not so whats happening is its saying I cant find this file therefore you have to install them on the RMDataManger project 
+It is a setting in the front-end project file that we needed to change to enable the files to come through on build. It was fixed once we went to .NET Core.
+unload the framework project (not the library), add these two lines to the PropertyGroup of the csproj file:
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+it should work like a charm without the need to reinstall libraries in the project.
+Why it happens: The issue is basically the dependencies are not getting copied properly in the build process when using framework with standard
+(doesn't happen with core afaik, which is why it will we go away by itself when we update in later videos). In order to make sure that they play well together, we 
+tell it to restore the package references and create the bindings. So no compile time errors but once the build happens, configManager/dapper dont get built in. The
+program runs until that point then begins to freakout since it needs to execute a class that isn't there and breaks.
+On another note: Running with these flags once are plenty to get it working. I tried to remove them and restart visual studio, the project still had no issues. It 
+seems that only one copy is necessary, but I would leave them there just in case my observation is not true.
 .Net Standard and Core dont read package.config like Framework does
+
+Upgrade the API to .Net Core
+with web projects there is a lot of changes it not just change the csproj file you also have to change how app start works and change how dependencie injection works
+coz now it built rite in and move over app config/web.config to appSettings.json so what we will do is create a new project and then move our content into that project
+then delete the old project there 2 ways we can do this we can create a new solution so that we can have the same project name then after we delete the old one
+we can move over the new one or we can create a new project in our current solution and just name it a new name Tim likes that way better as it is a new project
+then it should have a new name
+Step 1 create new asp.net core web app 
+we want to use the api project template but it doesnt allow us to connect to our local db that we have already created because now in core api project type is just
+an api now in framework we got controller that was not just api controllers but also web controllers we dont have that anymore you can add in other things but out 
+the box by defalut its just api if we want the rest we have to choose web app project type and then also use api like we do with mvc project type but we pick 
+web app mvc so we have it close to what we have in .Net Framework we have mvc code and api as well so click that one then go to change under no auth click 
+individual user accounts and click dropdown and select Store user account in-app thats the option we didnt have in web api later we can deicede if we want to keep
+the mvc project or delete it and keep just the api
+Setp 2 rite click project and go to set as start up project lunch the project to see the build error on the play button click the dropdown and select the 
+RMDataManager.API then press play no error
+Step 3 go to appsetting.json that has replaced web.cofig its created a new defualt login db we can use our existing login system but Tim wants to create a new one
+we will have to recreate our user but that will ensure we keep our old db running with our new db and not have to worry about creating changes in our db coz the new
+system but then means we cant use our old system anymore so we create a 2nd db and recreated my login 
+change the default db name to RMDM-APIAuthDb
+run app and reg click migrations applied and then log in which is baked in by .Net
+Step 3 copy all the controller we need from old project to new start with coping everything from inventory controller in RMDataManage and create a new api controller
+empty called inventory in new project and paste the stuff from the inventory controller into the new one and put authorize at the top of the new class as well 
+finish doing all the controllers then do the models there a lot of changes and things to do to get the entity parts to work just watch the vid again if I need to do
+that (Tim Corey vid 33 35:00)
+Step 4 go to app.config in wpf and change the api value to = the new core api value so its pointing there now you get the value from when you run it its in the browser
+local host bla bla
+step 5 add roles in startup.cs in new project microsoft took it out bcoz people dont always use roles so this will add roles into our auth .AddRoles<IdentityRole>()
+right under services.AddDefaultIdentity
+Step 6 create rolesand assign it to our user we create a method to do it and then comment out the anytime we need to use it we uncomment it we put it in home 
+controller uder privacy() and to excute it we click on privacy page once where done with it we comment it out the i.e of it is in homeController
