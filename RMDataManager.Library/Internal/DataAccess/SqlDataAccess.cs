@@ -7,15 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.Extensions.Configuration;
 
 namespace RMDataManager.Library.Internal.DataAccess
 {
     //connection to our db
     internal class SqlDataAccess : IDisposable
     {
+        private readonly IConfiguration _config;
+
+        public SqlDataAccess(IConfiguration config)
+        {
+            _config = config;
+        }
         public string GetConnectionString(string name)
         {
-            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
+            return _config.GetConnectionString(name);//this reads the json verison so it goes and gets the value from appsetting.json
+            //return ConfigurationManager.ConnectionStrings[name].ConnectionString; this no longer works it cant read the connection string from web.cofig anymore
         }
 
         public List<T> LoadData<T, U>(string storedProcedure, U parameters, string connectionStringName)

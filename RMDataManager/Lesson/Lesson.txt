@@ -62,5 +62,12 @@ RequestContext.Principal.IsInRole("Admin")//returns a bool check to see if the u
 for a method but we want to give admin more info then we just wrapp this in an if and rite the code inside it i.e print every detail elseif manager print only clients
 and staff details i.e (Tim corey vid 27 adding roles to api 32:00)
 
+
+
+Knowladge
+IConfig is out the box from .Net core it looks in all the various config places and properly overides which ones is most important (Tim Corey vid 35 16:25)
+
+
+
 Tips
 breakdown(Tim corey display product 17 2:00 ) to a db design problem listen to it again

@@ -393,3 +393,10 @@ step 5 add roles in startup.cs in new project microsoft took it out bcoz people 
 right under services.AddDefaultIdentity
 Step 6 create rolesand assign it to our user we create a method to do it and then comment out the anytime we need to use it we uncomment it we put it in home 
 controller uder privacy() and to excute it we click on privacy page once where done with it we comment it out the i.e of it is in homeController
+
+Add auth and swagger to new ,Net core project
+create a ctor for configurationManager coz the one we have aint working in our sqldataaccess (Tim Corey Vid 35 7:00) where we pass the Iconfiguration must install
+Microsoft.Extensions.Configuration.Abstractions 1st now place the connection string for the rmdata db and put it in json formatt in appsetting.json 
+now we have to create ctor in every class we call the the sqldataccess and pass the Iconfiguration we have to do the same to the controller that call these classes
+IConfig is out the box from .Net core it looks in all the various config places and properly overides which ones is most important even key vault
+Now it connection to the api

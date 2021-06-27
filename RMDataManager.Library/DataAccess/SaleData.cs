@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using RMDataManager.Library.Internal.DataAccess;
 using RMDataManager.Library.Models;
 
@@ -11,13 +12,19 @@ namespace RMDataManager.Library.DataAccess
 {
     public class SaleData
     {
+        private readonly IConfiguration _config;
+
+        public SaleData(IConfiguration config)
+        {
+            _config = config;
+        }
         public void SaveSale(SaleModel saleInfo, string cashierId)
         {
             //TODO: make this soild  bcoz with added business logic in here where we should only have data access action here its important to have working code asap
 
             //we use all these 8 steps bcoz we dont trust the frontend the frontend could of gave us all this info so now we are verifying i.e checking at the front and the back
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();//get all the sales details listed in the saleDetailDBModel obj
-            ProductData products = new ProductData();
+            ProductData products = new ProductData(_config);
             var taxRate = ConfigHelper.GetTaxRate()/100;
 
             foreach (var item in saleInfo.SaleDetails)
@@ -64,7 +71,7 @@ namespace RMDataManager.Library.DataAccess
             sale.Total = sale.SubTotal + sale.Tax;
 
             //5 Save the sale model
-            using (SqlDataAccess sql = new SqlDataAccess())//open the db connection we want this a low as possible in the method coz we want the db open for as lil time as possible
+            using (SqlDataAccess sql = new SqlDataAccess(_config))//open the db connection we want this a low as possible in the method coz we want the db open for as lil time as possible
             {
                 try
                 {
@@ -96,7 +103,7 @@ namespace RMDataManager.Library.DataAccess
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess();
+            SqlDataAccess sql = new SqlDataAccess(_config);
 
             var output = sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "RMData");
 

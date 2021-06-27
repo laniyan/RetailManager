@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using RMDataManager.API.Data;
 using RMDataManager.API.Models;
 using RMDataManager.Library.DataAccess;
@@ -22,11 +23,13 @@ namespace RMDataManager.API.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _config;
 
-        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IConfiguration config)
         {
             _context = context;
             _userManager = userManager;
+            _config = config;
         }
 
         [HttpGet]
@@ -35,7 +38,7 @@ namespace RMDataManager.API.Controllers
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);/*this returns the current users Id in the method we dont want to ask the user for the id we want
                                                                           to get it  so we know who it is and what they call look for if we allow them to tell us then 
                                                                           they can look up wot they want*/
-            UserData data = new UserData();
+            UserData data = new UserData(_config);
 
             return data.GetUserById(userId).FirstOrDefault();
         }
