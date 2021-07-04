@@ -15,16 +15,16 @@ namespace RMDataManager.Controllers
     public class UserController : ApiController
     {
      
-        [HttpGet]
+        /*[HttpGet]
         public UserModel GetById()
         {
             string userId = RequestContext.Principal.Identity.GetUserId();/*this returns the current users Id in the method we dont want to ask the user for the id we want
                                                                           to get it  so we know who it is and what they call look for if we allow them to tell us then 
-                                                                          they can look up wot they want*/
+                                                                          they can look up wot they want#1#
             UserData data = new UserData();
 
             return data.GetUserById(userId).FirstOrDefault();
-        }
+        }*/
 
         [Authorize(Roles = "Admin")]
         [HttpGet]

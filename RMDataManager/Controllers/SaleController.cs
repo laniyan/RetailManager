@@ -13,7 +13,7 @@ namespace RMDataManager.Controllers
     [Authorize]
     public class SaleController : ApiController
     {
-        [Authorize(Roles = "Cashier")]
+        /*[Authorize(Roles = "Cashier")]
         public void Post(SaleModel sale)
         {
             SaleData data = new SaleData();
@@ -31,6 +31,6 @@ namespace RMDataManager.Controllers
             var output= data.GetSaleReport();
 
             return output;
-        }
+        }*/
     }
 }

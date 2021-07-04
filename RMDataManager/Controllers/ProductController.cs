@@ -8,11 +8,11 @@ namespace RMDataManager.Controllers
     [Authorize(Roles = "Cashier")]
     public class ProductController : ApiController
     {
-        public List<ProductModel> GetAllProducts()
+        /*public List<ProductModel> GetAllProducts()
         {
             ProductData data = new ProductData();
 
             return data.GetAllProducts();
-        }
+        }*/
     }
 }

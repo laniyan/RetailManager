@@ -45,7 +45,7 @@ namespace RMDataManager.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        [Route("api/User/Admin/GetAllUsers")]
+        [Route("Admin/GetAllUsers")]
         public List<ApplicationUserModel> GetAllUsers()
         {
             List<ApplicationUserModel> output = new List<ApplicationUserModel>();
@@ -83,7 +83,7 @@ namespace RMDataManager.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        [Route("api/User/Admin/GetAllRoles")]
+        [Route("Admin/GetAllRoles")]
         public Dictionary<string, string> GetAllRoles()
         {
             //convert the roles into a dict and set the key to the role id and the value to the role name
@@ -95,7 +95,7 @@ namespace RMDataManager.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [Route("api/User/Admin/AddRole")]
+        [Route("Admin/AddRole")]
         public async Task AddARole(UserRolePairModel pairing)//coz its a post u only send in one obj i.e a body
         {
             var user = await _userManager.FindByIdAsync(pairing.UserId);
@@ -105,7 +105,7 @@ namespace RMDataManager.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [Route("api/User/Admin/RemoveRole")]
+        [Route("Admin/RemoveRole")]
         public async Task RemoveARole(UserRolePairModel pairing)
         {
             var user = await _userManager.FindByIdAsync(pairing.UserId);

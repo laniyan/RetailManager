@@ -1,0 +1,423 @@
+﻿
+
+
+go to solution and add new project sql server database 
+Add a folder inside db solution schema name dbo and publishLocations//this is where we have our publish scripts publish to 
+Add 3 folders inside dbo folder caleed views, tables and stored proc
+right click the db solution click publish so we can create a profile then edit and go to browse click local and select mssql local db then click ok that will create a connection string for us
+then type our db name and click save profile as click the publishLocation folder and leave the default name then click save (tim corey vid 5 sql db project 7:35) then click publish this creates a db
+can check the db in sql server object explorer
+
+Add new wpf project to solution call it app name + WPF + GUI incase we add more GUI so that we know the diff
+then right click properties and change assmebly name to the project name i.e retail manager so when the assembly builds the .exe will be called the project name and not app name + WPF + GUI 
+then right click the WPF project and click set as start up project
+Then get rid of lil black debugging box go to tool then click options then scroll to debugging click that and pick genarally then scroll to and unclick show runtime tool in app
+add caliburn.micro to the WPF project in nuget packages
+now add a folder sturcature 3 folders Models, ViewModels (They have to be spelt correct or it wont work I spelled ViewsModels and the caliburn couldnt find the structre)
+and Views we are using the mvvm framework (Models views viewsModel) Views is wot we display to the end user model holds the data the view is 
+going to display and viewModels passes it to the view model is not data acces we hold our data access in a separte lib we slipt our concerns 
+then add a class in viewModel called ShellViewModel all viewModel classes end with viewModel 
+Then add a wondow to the view folder right click it and go to add then click window and call it ShellView we will make this replace the default window that was created for us
+then add a class to then WPF project and call it bootstrapper we uses this to set up caliburn.micro
+Then go to app.xaml and remove startupUri=mainWindow the in app.Resources tag add resourceDic.mergedDic tag then inside that add resourceDic tag and inside that add local:Bootstrapper with key Bootstrapper
+now we can delete then default window (MainWindow.xaml)
+
+use caliburn to do denpendcy injection useing simple container we wiried this up in the bootstrapper class 
+
+Add a table and called user to dbo,table folder and right click go down to table click add entered table name(user) then added IDENTITY to the id field
+we create more rows AuthUserId data typenvarchar 128 becoz the entity framework user db id uses nvarchar 128 we dont want to touch there db (Tim Corey vid 9 sql db 9:50 )
+we add mores and the once that are the same as enitiy we map the data type we added CreatedDate and set data type to datetmie2 that new one datetime is legacy and they couldnt remove it because of that
+we set the default value to getutcdate()because that is easier to convert to local after designing the tables I went to publishLocations folder right clicked RMData.publish click publish then click publish again
+
+we use caliburn to to make our shell view handle multiple views inheriting conductor 
+then add a dockpanel tag and put the grid tag inside it allows us to dock things in diff postions inside then create a menu inside there with to items file and account
+Then create a new view model called loginViewModel and then the login view in the view folder right click then add user control call it LoginView then change the background color 2 white
+we brought down the DesignHeight from 450 to 425 so we can still see the file and account tab from the shell view
+then we made the login view load when the shell view starts using ctor injection for the login view in the shell view class
+Connect tHead login view model to the login view by inheriting Screen in loginViewModel class screen is from caliburn and we have acces to notify() now we have attach the code
+behind the screen like featuure file code and winUI in app forms 
+
+Wire the api to the login screen create a api heleper class in helpers folder created a auth api call() create a method to init a httpclient set the base url in app config 
+by creating a appsettings tag and a add tad wit atrr key = api and value = go to project dataManager right click go to prop the click web and cop project uri and paste as value
+add a ref to config file in the WPFGUI solution right click ref then click aadd ref then select assemblies and type in serach box system.config then tick that box not the
+one with installed at the end then press ok then we get the value using configurationManger class, to get the ReadAsAsync<string>() to work for use to read the response of
+the api we have to add Microsoft.AspNet.WebApi.Client from nuget 
+create a model in model folder called AuthenticatedUser and create prop for what The token api returns 
+create a Interface of the api helper then add it to bootsrapper class we only want one instance of the api helper so we add it to singleton, in loginviewmodel in login()
+this is where we want to call the APIHelper() so when they press login it will call the api
+set multiple apps to start on start go to solution right click go to prop go to start proj and click multiple start proj and select the ones you want to start 
+    (rmdata, wpfgui) then click apply now both widows opens
+
+add error message for incorrect password on top of username added a extra row to login and push down username, password and login btn by changing the grid row value
+add visibility collapse, Visibility="{Binding IsErrorVisible, Converter={StaticResource BooleanToVisibiltyConverter}} this method is built in to the WPF  we set the resource 
+in app.xaml and give it a key static resource means from the resource dictionary BooleanToVisibiltyConverter converts a bool to visible or collapse true means visible false collapse
+create a prop in loginView for is error visible and error message the isErrorVis prop will check to see if the api returns an error if it does then it returns true
+then in the errorMessage prop we use NotifyOfPropChange() to see if IsErrorVisible prop has change and if it does we set to true or false then set error message to = api error message 
+
+create a API library that can be reused over other projects not just this one so we dont want our lib to know anything about our WPF
+delete class 1 then add class that will be our data access xall it SqlDataAccess create a connecr=tion string method make it return from config manager.connectionstring
+that is saved in our app.config we set the value in our method then make it return the string library dont have a web config or app config it depends on the config of the exe
+add couple of methods to get and set data we use dapper to help us do it its a nuget package dapper is a orm object relationship mapper like enitiy framework it dont generate
+code like entity framework its fast and efficient and works well with store procs and theres no maintaning code like u have to with entity
+Create a abstract class in our lib to get data we dont want our UI to know about store proc so it has no idea abt imp only cares about wot its recieving we call the class UserData
+1st create a folder in lib called DataAccess
+create another folder inside dataAccess and call it Internal and inside that create another folder called dataAccess and place the SqlDataAccess.cs inside it and make the class
+internal because we dont want anything outside the lib to use it we use the UserData.cs as the interface to gain access to db all our internal helper methods we put in 
+internal folder
+create a models folder inside the lib project 
+create a stored proc that gets the users first name, last name and email add based on user ID we go to the RMData dbo, stored proc folder add new stored proc and named it spUserLookup
+create a usermodel class in model give it all the props reping the columns in the user table we want to retrive the values from 
+create a method called GetUserById in UserData class
+create a user controller in our RMDataManager controllers folder go to add new controller pick mvc5 write and read actions and add [Authorize]
+at the top of the class then delete all route excpet for the details one change name to GetById make sure the class inherits from apiController coz we created a mvc controller 
+it inherits from controller but this is an api so we want it to inherit from api controller now let it return the getUserById method return
+go to publishLoca and publish our db again so that our stored proc is published 
+go to the user table in the sql db and add a user the one we already created so now we can test the endpoint and see if it brings back the user copy the id from dbo.aspNetUsers
+table (tim corey vid getting user 13 47:00)
+create a connectionstring to our RMdata in web.config bcoz our stored proc is there right click the db RMData and go to prop and then copy connectionstring
+
+Add a new project a class lib to the solution call it RMDesktopUI.Library we create this lib bcoz we dont want use the data manager lib coz it has data access and I dont want to give
+the UI project data access this is for code to support UI i.e talking to api etc 
+add a models folder to the new project lib call it LoggedInUserModel put the prop that we have in user model we dont inherit that class bcoz we want this lib to be independent
+create a folder in new project called API move all Api helper methods from RMDataManagerWPFGUI project into this new folder then delete them from GUI project
+install web api.client and update newtonsoft move AuthenticatedUser to the models folder of this project
+create another method in api class GetLoggedInUserInfo that takes an args of a token add token prop to logged in user model create a interface for LoggedInUser and add it to 
+bootstrapper.cs singleton now we pass the ILoggedInUserModel to the ctor of api helper then map that object to the return of the get LoggedInUser() and the token to wot was
+passed in add Task GetLoggedInUserInfo(string token) to interface
+add GetLoggedInUserInfo() to the LogIn() in RetailManagerWPFGUI ViewModels folder LoginViewModel.cs and pas token u get from the return of the Authenticate()(Tim Corey Vid getting user data 2 14 40:15)
+
+Add sales page in view moedls folder add new class called salesviewmodel and inherit screen then add a user control to views folder call it salesView create the componnents
+on salesViews pages and in salesVeiwModel create all the methods and props fpr the screen
+
+Wire up the event EventAggregator so we can have some interform communication we want to hit the loggin button and that fires up the sale page to do this the sales view has
+to know about the login event so we have to broadcast to the entire WPF app heres a new event and anyone listen for that event can then act apon it so now when log button is hit
+and the user successfull logs in we will broadcast an event that will say hey somebody just logged in we wire up the shellview to listen to that event and then it will close the
+login view page and create a sales page 
+put the EventAggregator in the LoginViewModel ctor then to raise a event us the publish on ui thread method we want this when somebody logs in so do it in the LogIn()
+create a folder in DesktopUI call eventModels inside it create a class called LogOnEvent this will be the key that we pass in our publish on ui thread method for anyone
+who is listening can find what there looking for and you know exactly what its for (breakdown Tim Corey vid event agg 16 15:35 )
+attach listener to shellview event in shellviewmodel class inherit IHandle and pass the logOnEvent class in the <> imp the Ihandel() so we are only listening to that event 
+then reg the listening to log on events using the subscribe()
+create the code we want excuted when event is trigged we want the sales view to appear so we use activateItem() can only have 1 activateItem so that will push the log in page back
+but we want to destroy login page coz that will keep log in page there with the crdentail of last login user as its the obj we have in shellView with all the prop having vaules
+if someone else goes on to log in page it will still have the values from the object so if they just have to press login so we can destroy it in two ways 1 create a clear() 
+and call it in logIn() but if we add something later that sensitive and  forget to do the clear() 2 we can create a new instance of login that will overrite the old one we use
+the container GetInstance() more info in shellViewModel Handle(LogOnEvent message) or we can just create the loginViewModel in the ctor as all viewModels are per request every
+time we call the ShellView class it will give you a new login view model object wiping out any data it once had meaning u cant move back and forth from pages and still have 
+the values u entered there with is correct behaviour for a login page 
+
+Get the avaible items for sale from the db and throught the API and into our WPF project
+we need a combine of two tables to populate the items column in salesView inventory and product table we change straigthy and just add acolumn to product table called quantityInStock check for breakdown(Tim corey display product 17 2:00 )
+Create a stroed proc we create a stored proc for everything so we can have that final line of def in our dbthat way we scure our db to only have stored proc access that way we know it almost fully proctected
+from sql injection and accidental modification to the table i.e deleting with out where clasues 
+create a product controller use webApi empty framework
+create a product model in dataManager lib inside models folder
+create a productData class in data access folder in same project in there create the getAllProduct()
+create a class in api folder called productEndpoint we call it this coz its not a full api we are only using it for products add IApiHelper init it in ctor the create a getall() add 
+ApiClient prop to IApiHelper Add productModel to desktop lib then in getAll() then create Interface for product endpoint class then link it in bootstrapper as a PerRequest under container
+create ctor in salesViewModel and put IproductEnpoint then create a overriden OnViewLoaded() and call LoadProducts() this will load the when the page is loading  
+
+Select product and add it to the cart we want to wire that up
+To add to a cart its simple because we already have a view model we can wire that up easy create a prop in salesViewmodel type is ProductModel call it selectedProduct in the set put notifyPropChange()
+In salesView go to the textblock that has the item column in listbox and the Selected prop and bind it to the prop now everytime we select something in the items list it will put that model product
+model in or selectedProduct prop put NotifyOfPropertyChange(() => Cart) and NotifyOfPropertyChange(() => SelectedProduct) this prop value is set by the gui we use it in the gui
+we put SelectedItem="{Binding SelectedProduct}" in the item column
+Add a CartItemModel to the UI lib add 3 prop product, QuantityInCart and displayText
+create a full prop for selected product add 
+create a Cart prop and a private cart field init the cart field with = new BindingList<CartItemModel>(); now the cart prop thats a list of cart items put NotifyOfPropertyChange(() => Cart)
+in CanAddCart prop check to see if selected product quantity is more than item quantity (the quantity the user put) and item quantity is > 0 if is set to true this will enable the add cart btn
+in AddCart() create a var to check if the selected product already exist in the cart if it does then just update quantity so we dont have the same product in the cart more than once then if it isnt
+create a new CartItemModel and init it with the selected product and item quantity  then add it to the cart and take away the item quantity from the product quantity rest the item quantity and
+put  NotifyOfPropertyChange(() => SubTotal); to trigger the subtotal 
+imp the subtotal prop create a local subtotal var then do a foreach of the cart and then subtotal += item in the cart then return subtotal 
+in cart column in the gui we use the cartItemModel prop display to text TextBlock Text="{Binding DisplayText}" that prop just returns product name and item quantity 
+
+Add in the product table a field to see if its taxable set it to 1 (true) for default value add the new field to all the models
+in tax prop inside saleViewModel put logic to determine the tax price 
+create a folder called helper in desktop ui lib and create a class inside it called configHelper this will read configs from the app.config we will put the tax rate value there create a method in there
+that gets the taxRate from config make the method return a decimal we have to convert the app.config value to a decimal from a string use try pasre if it cant throw an exception create an interface
+then add it to bootstrapper class as a singleton and add it to the ctor in the sales veiw model then add the getTaxRate() to the tax prop 
+create a private calculatesubtotal() and calculatetax() put the cal logic in there swap out wot we have in subTotal prop for it add the method to tax prop
+in total prop use the two calculate method plus them against eachother and return the value thats our total amount 
+add  NotifyOfPropertyChange(()) for tax and total to add to cart and remove from cart props 
+
+refactor add foreign keys 1st in inventory table click foreign key on the right click and select add foreign key and enter FK_Inventory_ToProduct our productId in our inventory table maps to our id in 
+product table becoz we dont call it product id in the product table we call it id we have to link it to that productId in this table we do that by adding a ref FOREIGN KEY ([ProductId]) REFERENCES Product (Id) 
+do the same with sales for cashierId which links to user id there a very god reason y user id is a nvarchar(128) (Tim Corey vvid early refactoring 20 9:30) wired up saleDetail table with fk's
+Changed the name of the entity framework db from aspnet-RMDataManager-20210601082611.mdf to EFData so its shorter and easier to rem swapped out defaultConnection the name of db and the catalog value 
+all to ETData go to methods where we use the old values and swap them out i.e public class ApplicationDbContext : IdentityDbContext<ApplicationUser>  { public ApplicationDbContext() : base("ETData", throwIfV1Schema: false)
+{} then run the enable-migrations command in package manager enable-migrations -ProjectName RMDataManager -StartUpProjectName RMDataManager -Verbose  the the updateDatabase command we do this to get ride 
+of our old db the old name on to make our new name one take over
+in shellveiwModel class we get ride of _container and use caliburn Ioc.Get() now we no longer ineed the SimpleContainer dependency 
+change the item column in thw salesView page to show price and quantity in stock go to the item column in sales view wrap a stackPanel around the textblock set orientation to vertical then underneath
+the texblock create 2 new stackpanel set orientation to horizontal in that stackpanel create two textblock one for the price one for the quantity and bind to Retail price and the other to quantity in stock 
+wrap stackpanel around the textblocks create two textblocks for each element one for text name and other for binding 
+had a bug I have to make sure wen delete a db and setting up a new that the entity db users table Id is the same as my user table id 
+
+Post sales info to the db (wiring up both side the frontend and the api sides)
+put taxrate key in web.config appsetting tag in RMDatamanager same as how its set in app.config
+send over to our api is the cartItemModel and we only want prop productModel and from that the id with id we can look anything up and quantityIncart from CartItemModel
+create a model to send the data over create it in the desktopui lib in model folder call it saleModel and create a saleDetailModel put to prop in there productId and
+quantity in saleModel create a prop that takes a list of saleDetails call it saleDetails when we do a purchase we will send over just a sales model and that will have a
+list of the saleDetails in it
+in the Checkout() we need to create a sale model and post it to the api
+in CanCheckOut prop we check if cart count is > 0 then set it to true that will enable the checkout btn put notify() for canCheckOut in remove() and Add() when ever
+we remove we need to notify() and when we add we need to notifty as well 
+in salesModel go to saleDetails prop and init an new list object
+init a saleModel in checkOut() create a foreach to loop tru the cart prop and add the items to the saleModel obj now we post this to the api 
+create the api to post the data so create a new api controler called saleController in dataManager project controller folder in that class put the auth attribute 
+now create a front end saleModel in model folder of rmdm lib project coz there is no frontend only code we put it in the rmdm lib and a saleDetailModel put same prop
+as we have in desktop lib although they look the same there not they are used diffrent so we cant just sometimes we may have classes that look the same but aint the
+same so we cant just inherit the class we have to create them twice good breakdown in (Tim Corey vid 21 posting sales data 33:00 )
+create a new class in the api folder desktop ui lib call it saleEndpoint create a ctor in that class for the api helper() this class will call the api to the sale endpoint
+create a PostSale() that takes a saleModel from the ui and eventurlly will make a api post call to the sale table and pass the saleModel via the body
+create a saleEndpoint Interface link it up in bootstrapper class
+create a salesData class in dataManager lib dataAccess folder create a save sale method that takes a saleModel and will take 8 steps we use all these steps 
+bcoz we dont trust the  frontend the frontend could of gave us all this step info so now we are verifying i.e checking at the front and the back
+create a model in dm lib models folder call it saleDetailDBModel which model of the columns in the sale Details table 
+convert the saleModel into a saleDetailDBModel create a new class called saleDbModel in rmdm lib models folder copy the colums from the sale table as props so we can map it
+in productdata create a get product by id method
+create a stored prop to get product by id then publish it
+create a stored prop to insert data to sale table
+create a stored prop to insert data to saleDetail table publish it
+create a stored prop to get cashier by id from sale table publish it
+create a another ConfigHelper class in rmdm lib add the key to appSetting in web cofig in rmdm project make the getTaxes() static this gives us the tax amount in our
+SaleDate class so now we can work out the total price finish of the steps 
+in sale controller inside post() put a saleModel obj in the arg and put a new saleData obj use the saveSale() and pass in the saleMoedl obj and the userId
+
+Updating quantity in cart add and removing items
+create a ui model in the desktop WPFUI project so we can notify change we dont want to do this in the UI lib coz we would have to modify our model and our model maps 
+data from our api so we dont want to do that we call it CartItemDisplayModel put all props init same as CartItemModel but make product type be productDisplayModel 
+then create a new model called productDisplayModel in CartItemDisplay inherit INotifyProp and imp it there and ProductDisplay prop
+Add auto mapper from nuget to WPFUI proj this helps us with model transforamtion between layers bcoz we may be adding changing mulipating the model so its job is to
+take the data from one model and move it over to a diffrernt model where the 2 model are close or hold same data 
+add auto mappper denpendency injection system in configure() pur create new MapperConfiguration obj store it in a var in there config the obj you want to map
+then create the mapper then pass it tru the container for the denpendency injection
+Add mapper to the ctor of salesViewModel in there swap out all productModel for productDisplay same with CartItemModel to CartItemDisplay
+create a mapper in LoadProduct() to map the model we get from the api to the new productDisplay model 
+Take out the hack from addCart() take out the display prop from CartItemModel in UI lib
+reactor config mapper put it in a private method then call th method in config()
+Wire up the removing cart btn
+Add create a selected Item prop to cart column in SaleView
+Create a SelectedCartItem prop with CartItemDisplay as type to set an item in the cart and is called when selected Item prop in cart colun is triggered
+Create CanRemoveFromCart with logic for when this should be trigged to be on i.e if there is an item selected in cart then we can remove it
+Imp RemoveFromCart() 
+
+Reload the saleView once checkout has been done
+create a private ResetSalesViewModel() and create a new cart obj inside it and call the LoadProduct() inside it and Notify() for cancheckout as well call it in the 
+checkout method at the bottom
+Clear subtotal, tax and total we have to add all the notify() for these props to the ResetSales()
+Create a exit tab to close app go to shellView inside MenuItem header='_File' create a MenuItem tag name = exitApplication we can connect this to a method or a prop
+create a ExitApp;ication() in shell view and call the TryClose()
+change a loginbtn to log out button and if log in take away account tab add a visibility attr
+Create a method in LoggedInUserModel prop desktop UI call it LogOffUser() and set all the prop in the class to empty and set CreatedDate to datetime.minValue add the 
+method to interface put the ILoggedInUserModel in the shellViewModel ctor hook up the denpendency injection 
+Create a logOut() and call the LogOffUser() and the ActiveItem() to Get LoginViewModel()
+Create a IsLoggedIn prop of bool type check to is if token is not set to null if it is set prop to false put this prop in the saleView as part of the visibility attr
+Add NotifyOfPropertyChange(() => IsLoggedIn); to LogOut() and Handle()
+
+clear header for when user logs out bcoz we still have the token from last user in the head so in api create the logOfUser() and call the api to clear header method add
+method to interface as well
+Add Api to ShellView add the dependency injection then call the api.LogOffUser() inside of LogOut()
+Create a transaction method we create this because we are doing 2 steps for an operation we are riting to the sale table and to the saleDetail table if the transaction
+breaksdown after its riten to the sale table and doesnt do the other then we have a problem so the transaction methods makes sure both our done and if not i.e only
+one is done then it will roll back that one and cancels the whole transaction sql does sql transaction and normally we should only do our transaction inside sql
+but in our scenario its best to use C# to do the handeling of the transaction (Tim Corey vid 24 SQL Transaction 16:00) its dangours to do it with C# so only do it when
+its best to
+Create the transaction method in SqlDataAccess class and create 5 metohd that will Open connect/start transaction method, save using the transaction, load using the 
+transaction, Close connection/stop transaction method and Dispose
+inherit IDisposable in SqlDataAccess class and imp the method
+In SaleData.cs go to where we created the sqlDataAccess obj and now we can wrap that in a using statement that will call our version of dispose() and inside call our
+startTransaction() and the rest of our 5 steps  to wrap our transaction in our new transaction()
+
+Fix Transaction bug
+we have a commitTransaction() which commits and closes the connection and we have a Dispose() which calls the CommitTransaction() so if we call the commitTrans() and
+then the Dispose() the commit gets called twices the second time it will have already done the commit so it will throw an ex cause it cant do the same commit twice
+we do this when we use the using statement and inside it we call the sql.CommitTransaction thats how exposued this bug
+to fix create a private var bool call it isClosed use it as a trigger in the StartTrans() set it to false at the end meaning its open then at the end of commitTrans()
+and rollBack() set it to true and in dispose wrap the commitTrans() in a if
+
+creating store proc to view and add inventory and endpoints for that data
+create verious store prop GetInventory gets all the existing inventory, InsertInventory add a new inventory record, GetProducts gets all of the products from inventory
+letting us knw wots low and wot is plenty we already have this method, GetSales gets a summary of sales ltes the manager to see wots selling and whats not
+Create the GetInventory we will start by doing a bottom up apporach starting with the db 1st finishing with the GUI 
+create a store proc spInventory_GetAll and create a store proc spInventory_Insert that takes in 4 args that will be the values we want to insert into the table 
+create a store proc spSale_SaleReport we will be joining tables to get all the info we want we join the user table with the sale table via the chasier id and id and
+then select the rows we want to see from both tables publish for all the store proc
+Create a method in data acces that will call the store proc lets start with the GetSaleReport that will return saleReportModel list that we will create in the models 
+folder that will have the prop of all the select values in the store proc in the GetSaleReport() create a SqlDataAccess obj and use the LoadData() this is the one we create
+ourself this same metohd we get from entity framework but we created our as Tim doesnt like leaning on entity framework so we have a load and save method to the db
+now create an Inventory data access in data access folder and create a getInventory() that returns a InventoryModel that we create in models like on top then create 
+a SaveInventoryRecord()
+now we move to the next level up which is the API which lives in the controller folder in RMDataManager 
+create a GetSale() that returns a list of SaleReportModel in SaleController that calls the Saledata mehtod getSaleReport() put [Route("GetSalesReport")] on top of it
+Now create an Inventory Controller put Authorize attri on top and call the inventory data methods imp both in there to get inventory and insert
+
+lockdown user roles
+add roles in the Entity Table dbo.aspNetUserRoles the ef db dont auto create a guid for the role table so we have to create a new sql script to do so so right click on
+EFData and click new query then create an insert query to insert new roles in Roles table add 3 roles chasier, manager and admin and use the NEWID() in front of each 
+values i.e INSERT INTO dbo.AspNetRoles (Id, [Name]) Values (NEWID(), 'Chasier') then click the run btn not the normal play btn there is one on the left hand corner
+or just rite click and click execute 
+Inventory is the things we have put in the warehouse the product list is what products we have and whats the total quantity so if we bought 50 iron and already have 
+10 in the warehouse the product table will say 60 iron in total
+set roles on apis us the Roles prop in authorize and set it to the role name we set the roles for what controllers the users are allowed to use
+set product controller to Cashier set sale controller API method Post to cashier and set the GwetSaleReport() to admin, manager set Inventory controller method Get to
+Admin, Manager and set Post() to Adimn
+
+Handle users permissions error if user enters page and dont have permissions
+Go to salesViewModel.cs put a try catch in method OnViewLoaded around await LoadProducts() now we want to handel the ex with a message to the user in wpf we would 
+usely use window.messagebox() we aint using that coz that breaks MvvM because the controller should not be doing UI stuff we need a MvvM friendly message box so we create 
+one in ViewModels folder inside RMdestop UI inherit Sceen which comes from caliburn and micro create 2 prop one called header for the header of the error message
+and message where the full message will be then create a updateMessage() that takes an arg of header and message then set the args to = the props then set a notify()
+for both header and message then create a close method to close the box now create a view from user controller wpf in view folder in there create a stackPanel and two 
+textblock with the names of the props we just made and a button tag where the name = close() we dont want one copy of the error message we want instances 
+in SalesViewModel ctor inject statusInfiViewModel in the catch use the UpdateMessage and set the header and the message then use the widown() showdialog this
+makes you have to deal with the message box 1st you stash or hide it you have to deal with it in the args passing status, null ,null thats null for context and settings
+create a dynamic list of settings from a expandoObject use the WindowStartUpLocation
+
+Create a screen that will show who has rite to use the app (signed up or reg) and if they are what permissions do they have
+Create a get all user() in userControlller inside it create a applicationDbContext obj create a applicationUser genric UserStore obj place the context obj in there  
+create a applicationUser genric userManager obj place the userStore obj in there then use that obj to use the User.ToList() to get all the users wrapp all of this in using{}
+use the appDbContext method Roles.ToList() to get all users roles
+create a applicationUserModel in RMDataManager project model folder to map the values we want to retrive from roles and user
+create a foreaach to loop tru userNanager obj a list full of users inside the foreach create a applicationUserModel oj and do an obj init for user id and email and 
+another nested foreach to add to the dict in the AppUserModel prop for the role
+create a user endpoint in desktop ui lib and a user model, inside the endpoint create a GellAll that returns a task list of userModel make userModel that maps appUserModel but this is
+the desktop version and init the dict in the class in the getAll() call the GetAllUsers api and create an interface of the userEndpoint then add the interface to
+bootsrap container
+Now we have all that in place we can start working with our data create a viewModel call it userDisplayViewModel that inherits Screen create a LoadUsers(), a 
+public BindingList<UserModel> Users prop and OnViewLoaded(object view) which haves the unauth error exception
+create a UserDisplayView.xaml copy and paste everything from sale page and then modify it to how we want call it User Administration
+we dont want to have aload of roles under our email specifing what roles we have instead we want to create a comma separted list of our roles to do that in  UserModel 
+we create a prop called RoleList and make it return a comma separted list by using Join() and Linq
+create a user management tab in shell view page then add the method in shell view model that will activate Item using IoC.Get() genric method 
+
+Create some endpoints for our user api control
+create an endpoint to get all roles we 1st create the GetAllRoles() in the controler 
+create an post endpoint that addes a role to a user and one that takes a role from a user create a model to pass in as the body call it UserRolePairModel create the two 
+prop of the attr thats needed to remove and add a role via entity db (UserId and RoleName) becoz u cant delete or add a role to someone without knowing who they r
+Now add all same methods to the userEndpoint in UI Lib
+Update the IUserEndpoint 
+Use the enpoints in the WPF
+
+
+
+***********************************************************************.NET CORE************************************************************************************
+
+Microsoft have a tool that will look tru our whole app and say which ones are upgradeable which ones have to be changed with ones are incompatible and so on but 
+Tim dont like it he says its a lil bit off a overload it makes it even more intimidating to upgrade even a simple app and if its a complex app its really just too
+much sometimes at least it feels that way so Tim just upgrades and see what breaks we always have souce control to roll back if we need
+We should knw what our dependencies are in our project we are upgrading so we have a few dependencies in our wpf class Lib and they all have to do with nuget
+whuch are microsoft.AspNet.WebApi.Client and Newtonsoft.json so we have to make sure they are compatible with upgrade to .Net core or I would have to find something
+else to use and swap them out another thing is package.config that where the packages live in .Net core your package.config file is merged into your csproj file 
+Tim dont want to do it coz of what we do in the next set  
+Next step edit csproj file right click it and click edit but we can just do that for a .Net Framework one bcoz it classes it as live so we have to unload the project
+to make any changes to it that takes it offline so now we can delete everything in there but ti be on the safe size copy it to a note pad just incase theres somink 
+we might need we can delete everything bcoz we didnt migrate our packages in there if we did then we would need to keep them in there coz we cant delete our packages
+we need them 
+Edit csproj file this is the biggest part of upgrading to .Net core or .Net standards
+Create a new csproj file layout (Must get Tim Corey Conversion tips PDF) strat with Project tag and so on i.e in RMDesktop UI lib csproj save it then close it we
+have to close it coz it will not reload project without closing 1st then reload csproj now we have the abilty to edit csproj file without having to unload it
+Next Step if we ggo Nuget packages the only one that will be installed is NETStandard.lib we could add them str8 back because we know what they are coz there still
+in our packages.config thats why we left them there but 1st Tim wants to build to make sure he knows where his errors are which should come from not having them 
+packages so right click project and click build we get Error CS0579: Duplicate 'System.Reflection.AssemblyCompanyAttribute' attribute (14, 12) .Net Framework auto
+builds an assembly info section in our project under properties in a class called assemblyInfo where as .Net core builds it on the fly so now we have 2 in order to
+not have to we have to either delete the assembly file or set it to not generated assembly info good breakdownn of how it happens and when to choose what option
+in (Tim Corey Vid 32 Upgrading to .NET Frontend 13:30) we deleted the class theen we build again we got 11 errors we added one package 1st to see the some error 
+drop the Asp.NetWebApi copy it from package.cong and paste it in nuget package and you can see in the denpendencies section if its compatible with .Net Standards 
+which it is then install it now build again that took it down to 3 error we had a lot of denpen that our app didnt use so going tru the errors and seeing what they
+are and what dependencies they need will hepl only add the ones that are being used now we have to add system.config.configManager this isit in our package.config 
+because it came with the .Net Framework now microsoft have taken a lot of things out of .Net core and standards and made them nuget packages instead coz it wants 
+to stop blouting coz u have everything and u only use 20% so now what everyelse you need you can just add it as a package instead of built in so when migrating
+there going to be things missing that you will have to research for rebuild again now we have 0 errors we dont need json newton thats what we just found out and 
+thats now bcoz it comes as part of webApi so we no longer need it another reason why we add the packages in one by one and see the errors we can delete the 
+package.config file and we can delete app.config config tag as well as that is all set for newton soft json we can still use app.config with core and standard
+they kept that for backwards compatiablity 
+Run app to see it still works coz it should, we ran into a problem a small problem the system.config.configManager is clashing with the system.config.configManager in WPFGUI so
+we had to add the package to that project i.e upgrade it normally we would just change it in this project to match the other project but we couldnt coz that projects
+version was to old we couldnt get it in this project so we have just added a new nuget package to a project that we haven't changed over to .Net 
+core yet so we made an modification to a existing system and thats not ideal 
+
+Upgrade Backend class lib to .Net Standards we do into .Net Standard so we can upgrading in stages and keep our app working bcoz .Net standard works with both 
+framework and core
+In API folder go to RMDataManger lib click package.config and see the dependencies and we need to check our references we should of done that when we did the 1st 
+convertion as well coz if we have any references to any other projects we need to bring them over as well we do the same proccess as up top unload project edit
+csproj and all same steps dont need to worry about the microsoft packages in package.config but we have it copied in a note pad just incase the new framework 
+dont have it init
+to stop auto genration of assembly info go to csproj and add <GenerateAssemblyInfo>false</GenrateAssemblyInfo> sqlClient didnt came over with .Net standard so we 
+have to add that as well via nuget and config manager again and we also added dapper as well as that was the one dependencie in package.config that wasnt microsoft
+and our app dependens on we ran into another problem when trying to run the app our dapper wasnt found so we had to install it in the RMDataManager project again
+this isnt something we really want to do but now we found out what the problem is it is not bringing over the dependent dll's that it needs to when we 
+are building our library its saying i'm going to expect that the dapper and sql.data.client dll will be in the bin directory for our .Net Framework project and its
+not so whats happening is its saying I cant find this file therefore you have to install them on the RMDataManger project 
+It is a setting in the front-end project file that we needed to change to enable the files to come through on build. It was fixed once we went to .NET Core.
+unload the framework project (not the library), add these two lines to the PropertyGroup of the csproj file:
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+it should work like a charm without the need to reinstall libraries in the project.
+Why it happens: The issue is basically the dependencies are not getting copied properly in the build process when using framework with standard
+(doesn't happen with core afaik, which is why it will we go away by itself when we update in later videos). In order to make sure that they play well together, we 
+tell it to restore the package references and create the bindings. So no compile time errors but once the build happens, configManager/dapper dont get built in. The
+program runs until that point then begins to freakout since it needs to execute a class that isn't there and breaks.
+On another note: Running with these flags once are plenty to get it working. I tried to remove them and restart visual studio, the project still had no issues. It 
+seems that only one copy is necessary, but I would leave them there just in case my observation is not true.
+.Net Standard and Core dont read package.config like Framework does
+
+Upgrade the API to .Net Core
+with web projects there is a lot of changes it not just change the csproj file you also have to change how app start works and change how dependencie injection works
+coz now it built rite in and move over app config/web.config to appSettings.json so what we will do is create a new project and then move our content into that project
+then delete the old project there 2 ways we can do this we can create a new solution so that we can have the same project name then after we delete the old one
+we can move over the new one or we can create a new project in our current solution and just name it a new name Tim likes that way better as it is a new project
+then it should have a new name
+Step 1 create new asp.net core web app 
+we want to use the api project template but it doesnt allow us to connect to our local db that we have already created because now in core api project type is just
+an api now in framework we got controller that was not just api controllers but also web controllers we dont have that anymore you can add in other things but out 
+the box by defalut its just api if we want the rest we have to choose web app project type and then also use api like we do with mvc project type but we pick 
+web app mvc so we have it close to what we have in .Net Framework we have mvc code and api as well so click that one then go to change under no auth click 
+individual user accounts and click dropdown and select Store user account in-app thats the option we didnt have in web api later we can deicede if we want to keep
+the mvc project or delete it and keep just the api
+Setp 2 rite click project and go to set as start up project lunch the project to see the build error on the play button click the dropdown and select the 
+RMDataManager.API then press play no error
+Step 3 go to appsetting.json that has replaced web.cofig its created a new defualt login db we can use our existing login system but Tim wants to create a new one
+we will have to recreate our user but that will ensure we keep our old db running with our new db and not have to worry about creating changes in our db coz the new
+system but then means we cant use our old system anymore so we create a 2nd db and recreated my login 
+change the default db name to RMDM-APIAuthDb
+run app and reg click migrations applied and then log in which is baked in by .Net
+Step 3 copy all the controller we need from old project to new start with coping everything from inventory controller in RMDataManage and create a new api controller
+empty called inventory in new project and paste the stuff from the inventory controller into the new one and put authorize at the top of the new class as well 
+finish doing all the controllers then do the models there a lot of changes and things to do to get the entity parts to work just watch the vid again if I need to do
+that (Tim Corey vid 33 35:00)
+Step 4 go to app.config in wpf and change the api value to = the new core api value so its pointing there now you get the value from when you run it its in the browser
+local host bla bla
+step 5 add roles in startup.cs in new project microsoft took it out bcoz people dont always use roles so this will add roles into our auth .AddRoles<IdentityRole>()
+right under services.AddDefaultIdentity
+Step 6 create rolesand assign it to our user we create a method to do it and then comment out the anytime we need to use it we uncomment it we put it in home 
+controller uder privacy() and to excute it we click on privacy page once where done with it we comment it out the i.e of it is in homeController
+
+Add auth and swagger to new ,Net core project
+create a ctor for configurationManager coz the one we have aint working in our sqldataaccess (Tim Corey Vid 35 7:00) where we pass the Iconfiguration must install
+Microsoft.Extensions.Configuration.Abstractions 1st now place the connection string for the rmdata db and put it in json formatt in appsetting.json 
+now we have to create ctor in every class we call the the sqldataccess and pass the Iconfiguration we have to do the same to the controller that call these classes
+IConfig is out the box from .Net core it looks in all the various config places and properly overides which ones is most important even key vault
+Now it connection to the api
+Now we sort out or auth to start with we have to add a couple lib bcoz we no longer have token base auth where we log in and get a token back to say we are auth 
+so we are going to create our own 1st add microsoft asp.netcore auth.jwtBearer then add system.identityModel.tokens.jwt then create a new controller called token
+this will now be our /token create a  ctor and pass the appDbContext and userManager<IdentityUser> then create a route for /token and it will be a post that will
+take a username, password and grant type and create a method to check the db and see if password and userName is valid pass that in the create method create a 
+method to generate a JWT for the user i.e GenerateToken(string username) in the method create a claim becoz JWT uses a claim system i.e of all in token controller
+sett up auth in startup.cs in config use AddAuthentication() pass in a lambda and set the default auth scheme and thee challenge scheme to Jwt bearer also add the
+AddJwtBearer() pass JwtBearer and a lambda and set the props of the Token validation param issuerSigninKey to true and IssuerSigningKey to our securityKey and etc
+this is the config for taking the token and making sure that the user is valid
+recap the token controller is where we you get your token from in start up this is where we use the token and make sure that the user is authenticated and there 
+token isnt expired 
+Now add swagger back to .net core we need this to help us see our routes it auto maps it in the doc so then if we have entered a route wrong we can see on swagger
+what the route we entered is so we can see what route is going to the controller sometime we think we set the route right with swagger we can see where we actullay
+set it to be, in nuget download Swashbuckle.AspNetCore, Swashbuckle.AspNetCore.Annotations, Swashbuckle.AspNetCore.Swagger, Swashbuckle.AspNetCore.SwaggerGen, 
+Swashbuckle.AspNetCore.SwaggerUI, Swashbuckle.Core this mite seem like a lot of dependencies we have just added but it aint bcoz of the new .net core way of 
+doing things it breaks everythink up into small pieces so you only take what you need and in this case this is all we need where as before will would of download
+one massive swashbuckle file with a load that we didnt need now we have 5 files with more alease everything we need and the 5 file combine are smaller than that
+one massive file we would of taken
+now add swagger to startup.cs confiq services method and in Configure(IApplicationBuilder app, IWebHostEnvironment env)
+with swagger you need to have explict bonding with ur api controller i.e you have to declear get, post etc using the attribute and not relying on the default
+convention to be picked up so we have to put [HttpGet] on top of a get call for swagger to work and map to it but in .net framework it use to just read it from
+the method name i.e Get()

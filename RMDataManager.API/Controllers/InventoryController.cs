@@ -22,7 +22,9 @@ namespace RMDataManager.API.Controllers
         {
             _config = config;
         }
+
         [Authorize(Roles = "Admin, Manager")]
+        [HttpGet]
         public List<InventoryModel> Get()
         {
             var data = new InventoryData(_config);
@@ -31,6 +33,7 @@ namespace RMDataManager.API.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpPost]
         public void PostInventoryRecord(InventoryModel item)
         {
             var data = new InventoryData(_config);
