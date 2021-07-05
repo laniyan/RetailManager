@@ -46,16 +46,16 @@ namespace RetailManagerWPFGUI.ViewModels
                 if (ex.Message == "Unauthorized")
                 {
                     _status.UpdateMessage("Unatuhorized Access", "You go not have permission to interact with the sales");
-                    _window.ShowDialog(_status, null, null);//thats null for context and settings
+                    await _window.ShowDialogAsync(_status, null, null);//thats null for context and settings
 
                 }
                 else
                 {
                     _status.UpdateMessage("Fatal Exceptions", ex.Message);
-                    _window.ShowDialog(_status, null, null);
-                }
+                    await _window.ShowDialogAsync(_status, null, null);
+                }//we need to await these becoz it maybe tryClose before before this is done
 
-                TryClose();
+                TryCloseAsync();
             }
 
 
@@ -78,7 +78,7 @@ namespace RetailManagerWPFGUI.ViewModels
                 if (UserRoles.IndexOf(role.Value) < 0)//index of will return the 1st occurrence of the item and if it finds nothink it will return -1
                 {
                     AvailableRoles.Add(role.Value);
-                } 
+                }
             }
         }
 

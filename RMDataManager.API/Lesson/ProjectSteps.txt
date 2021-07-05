@@ -421,3 +421,14 @@ now add swagger to startup.cs confiq services method and in Configure(IApplicati
 with swagger you need to have explict bonding with ur api controller i.e you have to declear get, post etc using the attribute and not relying on the default
 convention to be picked up so we have to put [HttpGet] on top of a get call for swagger to work and map to it but in .net framework it use to just read it from
 the method name i.e Get()
+
+Upgrade the desktop Ui to .net core
+1st unload project and edit project delete all and new csproj file info on this one we have to add .WindowsDesktop i.e in csproj then save close it and reload 
+project and delete assembley info
+2nd grite click dependencies and click add ref then add the desktopUI lib 
+3 and nugets packages back automapper, caliburn and micro 
+build the solution got a lot of failures as expected 
+1st IHandle has changed to HandleAsync and ActivateItem() to ActivateItemAsync() with new added arg new CancellationToken() and TryClose() is TryCloseAsync() 
+and _event.Subscribe() to _event.SubscribeOnPublishedThread() all in ShellViewModel 
+in loginViewModel change publishOnUIThread() to publishOnUIThreadAsync() and add cancellationToken
+in UserDisplayMode and salesViewModel change ShowDialog() to ShowDialogAsync() and TryClose to TryCloseAsync() 

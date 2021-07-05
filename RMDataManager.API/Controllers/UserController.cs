@@ -16,7 +16,7 @@ using RMDataManager.Library.Models;
 
 namespace RMDataManager.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]")]//this means all methods routes in this controller will start with api/User (controller is user)
     [ApiController]
     [Authorize]//you have to be auth to use these controls
     public class UserController : ControllerBase

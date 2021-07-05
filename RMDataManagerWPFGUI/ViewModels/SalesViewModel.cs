@@ -51,16 +51,16 @@ namespace RetailManagerWPFGUI.ViewModels
                 if (ex.Message == "Unauthorized")
                 {
                     _status.UpdateMessage("Unatuhorized Access", "You go not have permission to interact with the sales");
-                    _window.ShowDialog(_status, null, null);//thats null for context and settings
+                    await _window.ShowDialogAsync(_status, null, null);//thats null for context and settings
 
                 }
                 else
                 {
                     _status.UpdateMessage("Fatal Exceptions", ex.Message);
-                    _window.ShowDialog(_status, null, null);
+                   await _window.ShowDialogAsync(_status, null, null);
                 }
 
-               TryClose();
+               TryCloseAsync();
             }
 
 

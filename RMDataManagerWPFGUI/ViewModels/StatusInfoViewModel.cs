@@ -23,7 +23,7 @@ namespace RetailManagerWPFGUI.ViewModels
 
         public void Close()
         {
-            TryClose();
+            TryCloseAsync();
         }
     }
 }

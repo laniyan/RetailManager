@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using RMDesktopUI.Library.Api;
@@ -27,8 +28,9 @@ namespace RetailManagerWPFGUI.ViewModels
             
            // ActivateItem(_loginVM);//this will active our login in our shell page 
             _event = events;
-            //Listen to events
-            _event.Subscribe(this);/* in the agr u put who is subcribing to the events this means the current instance of this class
+
+            //Listen to events it sue to be _event.Subscribe(this) in .Netframework the new way just means when you get back an event you it back from thread you called it from 
+            _event.SubscribeOnPublishedThread(this);/* in the agr u put who is subcribing to the events this means the current instance of this class
             the reason why we tell it who is subcribing is coz the event aggregator has to say ok im remmbering who subscribing so that when a event happens it will send that
             event to every subcriber even if ur not listening to that particular type so now it send every broadcast it gets to here when we see a bc if it not LogonEvent 
             we leave it coz that all we handel (Tim Corey vid Event agg 16 23:00)*/
@@ -46,7 +48,7 @@ namespace RetailManagerWPFGUI.ViewModels
 
             _apiHelper = apiHelper;
 
-            ActivateItem(IoC.Get<LoginViewModel>());//the same as up top just much better way from caliburn 
+            ActivateItemAsync(IoC.Get<LoginViewModel>(), new CancellationToken());//the same as up top just much better way from caliburn 
         }
 
         public bool IsLoggedIn
@@ -66,25 +68,25 @@ namespace RetailManagerWPFGUI.ViewModels
 
         public void ExitApplication()
         {
-            TryClose();
+            TryCloseAsync();
         }
 
-        public void UserManagement()
+        public async Task UserManagement()
         {
-            ActivateItem(IoC.Get<UserDisplayViewModel>());
+            await ActivateItemAsync(IoC.Get<UserDisplayViewModel>(), new CancellationToken());
         }
 
-        public void LogOut()
+        public async Task LogOut()
         {
             _user.ResetUserModel();
             _apiHelper.LogOffUser();
-            ActivateItem(IoC.Get<LoginViewModel>());
+            await ActivateItemAsync(IoC.Get<LoginViewModel>(), new CancellationToken());//not the cleanest to be newing up here tim will address it later
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
 
-        public void Handle(LogOnEvent message)// this handles the log on event so when its fired this is executed
+        public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)// this handles the log on event so when its fired this is executed
         {
-            ActivateItem(_salesVM);// this close the log in page and activate our sales page becoz we can only have 1 item active at a time wen we have the conductor<object>
+            await ActivateItemAsync(_salesVM, cancellationToken);// this close the log in page and activate our sales page becoz we can only have 1 item active at a time wen we have the conductor<object>
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
     }

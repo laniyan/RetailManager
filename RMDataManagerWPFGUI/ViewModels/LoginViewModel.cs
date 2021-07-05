@@ -106,7 +106,7 @@ namespace RetailManagerWPFGUI.ViewModels
                 await _apiHelper.GetLoggedInUserInfo(results.Access_Token);
 
                 //fire event
-                _events.PublishOnUIThread(new LogOnEvent());/* we use PublishOnUIThread becoz this makes sure if the thread on top slips of or goes into a background thread etc it makes doubly 
+                await _events.PublishOnUIThreadAsync(new LogOnEvent());/* we use PublishOnUIThread becoz this makes sure if the thread on top slips of or goes into a background thread etc it makes doubly 
                                              sure this event will be listen to on the UI thread other Ui can use it without having any cross threading isseus 
                                              we can pass a string in the args to be publish but thats way to generic to knw wot it represents alot of people may be looking 4 a string
                                              so instead we create a class with the discreption of what we doing with it it will be empty so we pass an empty instance in now who every
