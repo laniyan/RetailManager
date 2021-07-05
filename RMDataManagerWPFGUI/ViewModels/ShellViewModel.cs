@@ -15,14 +15,13 @@ namespace RetailManagerWPFGUI.ViewModels
     {
        
         private IEventAggregator _event;
-        private SalesViewModel _salesVM;
 
         private ILoggedInUserModel _user;
         // private SimpleContainer _container; no longer need coz of Ioc
 
         private IAPIHelper _apiHelper;
 
-        public ShellViewModel(IEventAggregator events, SalesViewModel salesVM, ILoggedInUserModel user, IAPIHelper apiHelper
+        public ShellViewModel(IEventAggregator events, ILoggedInUserModel user, IAPIHelper apiHelper
             /*SimpleContainer container no longer need coz of Ioc*/)
         {
             
@@ -35,7 +34,7 @@ namespace RetailManagerWPFGUI.ViewModels
             event to every subcriber even if ur not listening to that particular type so now it send every broadcast it gets to here when we see a bc if it not LogonEvent 
             we leave it coz that all we handel (Tim Corey vid Event agg 16 23:00)*/
 
-            _salesVM = salesVM;
+      
 
             // _container = container; no longer need coz of Ioc
 
@@ -86,7 +85,7 @@ namespace RetailManagerWPFGUI.ViewModels
 
         public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)// this handles the log on event so when its fired this is executed
         {
-            await ActivateItemAsync(_salesVM, cancellationToken);// this close the log in page and activate our sales page becoz we can only have 1 item active at a time wen we have the conductor<object>
+            await ActivateItemAsync(IoC.Get<SalesViewModel>(), cancellationToken);// this close the log in page and activate our sales page becoz we can only have 1 item active at a time wen we have the conductor<object>
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
     }

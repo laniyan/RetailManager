@@ -432,3 +432,10 @@ build the solution got a lot of failures as expected
 and _event.Subscribe() to _event.SubscribeOnPublishedThread() all in ShellViewModel 
 in loginViewModel change publishOnUIThread() to publishOnUIThreadAsync() and add cancellationToken
 in UserDisplayMode and salesViewModel change ShowDialog() to ShowDialogAsync() and TryClose to TryCloseAsync() 
+we now done all migration the breakdow 
+1st move most of the logic into class lib and use a .NET Standard 2.0 so it still works with .Net Framework
+
+Fix log out bug whewre shopping cart is still full after user logs out and logs back in
+in shellViewModel when we activate activae a saleView we pass a field in it so that means everytime we active the saleViewModel the view will perisit so to stop
+this we need a new instance of the saleView or we need to clear the last one Tim choose to go with the new instance approach using IoC.Get<SalessModel>() 
+now we can delete the dependencie  injection from saleModell
