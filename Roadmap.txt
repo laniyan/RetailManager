@@ -1,0 +1,12 @@
+
+Application Ideas:
+* Actually interact with the inventory
+* Move the API to Azure
+* CI/CD process
+* Deploy the Desktop App to Blob Storage for download
+* Introduce a web-based inventory control system (Blazor?)
+* web-based reporting
+* A xamarin forms app for a mobile register
+
+
+Phase 2 Roadmap
