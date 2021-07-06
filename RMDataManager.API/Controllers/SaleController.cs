@@ -18,10 +18,12 @@ namespace RMDataManager.API.Controllers
     public class SaleController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private readonly ISaleData _saleData;
 
-        public SaleController(IConfiguration config)
+        public SaleController(IConfiguration config, ISaleData saleData)
         {
             _config = config;
+            _saleData = saleData;
         }
 
 
@@ -29,10 +31,9 @@ namespace RMDataManager.API.Controllers
         [HttpPost]
         public void Post(SaleModel sale)
         {
-            SaleData data = new SaleData(_config);
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier); //old way how its done in .NET Framework - RequestContext.Principal.Identity.GetUserId();
 
-            data.SaveSale(sale, userId);
+            _saleData.SaveSale(sale, userId);
         }
 
         [Authorize(Roles = "Admin, Manager")]
@@ -40,9 +41,7 @@ namespace RMDataManager.API.Controllers
         [HttpGet]
         public List<SaleReportModel> GetSales()
         {
-            SaleData data = new SaleData(_config);
-
-            var output = data.GetSaleReport();
+            var output = _saleData.GetSaleReport();
 
             return output;
         }

@@ -10,13 +10,15 @@ using RMDataManager.Library.Models;
 
 namespace RMDataManager.Library.DataAccess
 {
-    public class SaleData
+    public class SaleData : ISaleData
     {
-        private readonly IConfiguration _config;
+        private readonly ISqlDataAccess _sqlDataAccess;
+        private readonly IProductData _productData;
 
-        public SaleData(IConfiguration config)
+        public SaleData(ISqlDataAccess sqlDataAccess, IProductData productData)
         {
-            _config = config;
+            _sqlDataAccess = sqlDataAccess;
+            _productData = productData;
         }
         public void SaveSale(SaleModel saleInfo, string cashierId)
         {
@@ -24,7 +26,6 @@ namespace RMDataManager.Library.DataAccess
 
             //we use all these 8 steps bcoz we dont trust the frontend the frontend could of gave us all this info so now we are verifying i.e checking at the front and the back
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();//get all the sales details listed in the saleDetailDBModel obj
-            ProductData products = new ProductData(_config);
             var taxRate = ConfigHelper.GetTaxRate()/100;
 
             foreach (var item in saleInfo.SaleDetails)
@@ -37,7 +38,7 @@ namespace RMDataManager.Library.DataAccess
                 };
 
                 //2 Get the info about this product
-                var productInfo = products.GetProductById(detail.ProductId);
+                var productInfo = _productData.GetProductById(detail.ProductId);
 
                 if (productInfo == null)
                 {
@@ -71,16 +72,17 @@ namespace RMDataManager.Library.DataAccess
             sale.Total = sale.SubTotal + sale.Tax;
 
             //5 Save the sale model
-            using (SqlDataAccess sql = new SqlDataAccess(_config))//open the db connection we want this a low as possible in the method coz we want the db open for as lil time as possible
+
+            //open the db connection we want this a low as possible in the method coz we want the db open for as lil time as possible
             {
                 try
                 {
-                    sql.StartTransaction("RMData");
+                    _sqlDataAccess.StartTransaction("RMData");
 
-                    sql.SaveDataInTransaction("dbo.spSale_Insert", sale, "RMData");
+                    _sqlDataAccess.SaveDataInTransaction("dbo.spSale_Insert", sale, "RMData");
 
                     //6 Get the id from the sale mode
-                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }, "RMData").FirstOrDefault();
+                    sale.Id = _sqlDataAccess.LoadDataInTransaction<int, dynamic>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }, "RMData").FirstOrDefault();
 
                     //7 Finish filling in the sale detail models
                     foreach (var item in details)
@@ -88,14 +90,14 @@ namespace RMDataManager.Library.DataAccess
                         item.SaleId = sale.Id;
 
                         //8 Save the sale detail model
-                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item, "RMData");
+                        _sqlDataAccess.SaveDataInTransaction("dbo.spSaleDetail_Insert", item, "RMData");
                     }
 
-                    sql.CommitTransaction();
+                    _sqlDataAccess.CommitTransaction();
                 }
                 catch
                 {
-                    sql.RollbackTransaction();
+                    _sqlDataAccess.RollbackTransaction();
                     throw;//this just throws the original exception
                 }
             }
@@ -103,9 +105,7 @@ namespace RMDataManager.Library.DataAccess
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-
-            var output = sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "RMData");
+            var output = _sqlDataAccess.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "RMData");
 
             return output;
         }

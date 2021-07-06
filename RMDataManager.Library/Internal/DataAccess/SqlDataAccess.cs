@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 namespace RMDataManager.Library.Internal.DataAccess
 {
     //connection to our db
-    internal class SqlDataAccess : IDisposable
+    public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
         private readonly IConfiguration _config;
 
@@ -30,7 +30,7 @@ namespace RMDataManager.Library.Internal.DataAccess
         {
             string connectionString = GetConnectionString(connectionStringName);
 
-            using (IDbConnection connection = new SqlConnection(connectionString))//this opens up the connection
+            using (IDbConnection connection = new SqlConnection(connectionString))//this opens up the connection, cant use DI here no point coz this class dependencies on new SqlConnection so its kl here
             {
                 List<T> rows = connection
                     .Query<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure).ToList();

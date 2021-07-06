@@ -440,3 +440,15 @@ in shellViewModel when we activate activae a saleView we pass a field in it so t
 this we need a new instance of the saleView or we need to clear the last one Tim choose to go with the new instance approach using IoC.Get<SalessModel>() 
 now we can delete the dependencie  injection from saleModell
 Create a roadmap in a txt file in the solution level and put app ideas in there
+
+Taking advantage of some of the feature we now have from .Net Core
+Are API have no dependency injection we had DI with th WPF coz caliburn and micro did it for us but we had nothing with the API so anytime we needed a new instance
+of something we newed it up rite there on place we have it there is when we had to do the Confiq this is going to be so messy everywhere we create new it is a
+dependency all over in our API we call SqlDataAccess sql = new SqlSataAccess() So we start in start up there we can add services to the container I done it in
+there under the comment personal services strat with Inventory switch out the new and add DI do it in the controller then do sql as DI to delete the config on 
+them pages coz we dont use it anymore as its passed in with the DI
+Now do ProductData and controller then do the saleData and UserData and dont forget to services.AddTransient<>
+using DI for a method that is using using statement the problem is that we use using so it calls the Idispose at the end and its safe but we cant get that if we
+use DI but what DI gives you is any DI is responsible to dispose anything it makes so we dont have to worry about it coz DI does it for us the only drew back
+is we dont know when its going to do it
+do a find all and enter new

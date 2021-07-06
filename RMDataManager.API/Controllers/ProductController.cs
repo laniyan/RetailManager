@@ -16,19 +16,17 @@ namespace RMDataManager.API.Controllers
     [Authorize(Roles = "Cashier")]
     public class ProductController : ControllerBase
     {
-        private readonly IConfiguration _config;
+        private readonly IProductData _productData;
 
-        public ProductController(IConfiguration config)
+        public ProductController(IProductData productData)
         {
-            _config = config;
+            _productData = productData;
         }
 
         [HttpGet]
         public List<ProductModel> GetAllProducts()
         {
-            ProductData data = new ProductData(_config);
-
-            return data.GetAllProducts();
+            return _productData.GetAllProducts();
         }
     }
 }

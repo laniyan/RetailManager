@@ -69,6 +69,9 @@ IConfig is out the box from .Net core it looks in all the various config places 
 
 Mvc controllers returns pages Api controllers return objs 
 
+new IList<> we dont use dependency Injection for that kind of stuff (Tim Corey vid 38 16:40)
+and newing up a model is kl its different to newing up a class that has any type of logic in it where just setting props
+
 Tips
 breakdown(Tim corey display product 17 2:00 ) to a db design problem listen to it again
 
