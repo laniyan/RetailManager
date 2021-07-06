@@ -452,3 +452,7 @@ using DI for a method that is using using statement the problem is that we use u
 use DI but what DI gives you is any DI is responsible to dispose anything it makes so we dont have to worry about it coz DI does it for us the only drew back
 is we dont know when its going to do it
 do a find all and enter new
+Set up the excpetion method in the catch blocks 1st pass in a DI in of ILogger<SqlDataAccess> then use the LogError() in the catch block
+Add log to the user controller we want more info when a user addes a role or takes away use the method that is there to get user by Id store the info in the logger
+prop
+

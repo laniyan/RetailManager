@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace RMDataManager.Library.Internal.DataAccess
 {
@@ -15,10 +16,12 @@ namespace RMDataManager.Library.Internal.DataAccess
     public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
         private readonly IConfiguration _config;
+        private readonly ILogger<SqlDataAccess> _logger;
 
-        public SqlDataAccess(IConfiguration config)
+        public SqlDataAccess(IConfiguration config, ILogger<SqlDataAccess> logger)
         {
             _config = config;
+            _logger = logger;
         }
         public string GetConnectionString(string name)
         {
@@ -116,7 +119,15 @@ namespace RMDataManager.Library.Internal.DataAccess
         {
             if (!isClosed)
             {
-                CommitTransaction(); //this closes the transaction and the connection
+                try
+                {
+                    CommitTransaction(); //this closes the transaction and the connection
+                }
+                catch (Exception ex)
+                {
+                   _logger.LogError(ex, "Commit transaction failed in the dispose method");
+                }
+               
             }
 
             //no matter what happens we have to always set these to close once this method has been called just a 2nd safey

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using RMDataManager.API.Data;
 using RMDataManager.API.Models;
 using RMDataManager.Library.DataAccess;
@@ -24,13 +25,15 @@ namespace RMDataManager.API.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserData _userData;
+        private readonly ILogger<UserController> _logger;
 
 
-        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IUserData userData )
+        public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IUserData userData, ILogger<UserController> logger )
         {
             _context = context;
             _userManager = userManager;
             _userData = userData;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -39,7 +42,6 @@ namespace RMDataManager.API.Controllers
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);/*this returns the current users Id in the method we dont want to ask the user for the id we want
                                                                           to get it  so we know who it is and what they call look for if we allow them to tell us then 
                                                                           they can look up wot they want*/
-
             return _userData.GetUserById(userId).FirstOrDefault();
         }
 
@@ -98,7 +100,23 @@ namespace RMDataManager.API.Controllers
         [Route("Admin/AddRole")]
         public async Task AddARole(UserRolePairModel pairing)//coz its a post u only send in one obj i.e a body
         {
+
+            //add logger we want to log additional info for when a role is changed
+
+            //find user info base on who is logged in 
+            string loggedInUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var loggedInUserId = _userData.GetUserById(loggedInUser).FirstOrDefault();
+
             var user = await _userManager.FindByIdAsync(pairing.UserId);
+
+            //we put the log here so incase it crashes we want it to tell us someone tried to switch users role
+            _logger.LogInformation("Admin {Admin} added user {User} to role {Role}"
+                , loggedInUserId, user.Id, pairing.RoleName);/*we dont use string temp($) we use the formatt that ive used bcoz this way for structured loggers this will pull 
+                                        * these items out and store them separately so we can do queries upon them its much more ideal if we do string temp it will
+                                        * return one big long string that we cant do any queries on but with structured logging we can pull out who the user was and say give
+                                        * me all the actions that Lanre did for adding and removing roles and it will list all the times i add or removed a role from someone
+                                        * and who they was with this way now we have the ability to pull out the var separtely in a structured logger like seriaLog (Tim Corey vid 38 56:00)*/
             await _userManager.AddToRoleAsync(user, pairing.RoleName);
         }
 
@@ -108,7 +126,16 @@ namespace RMDataManager.API.Controllers
         [Route("Admin/RemoveRole")]
         public async Task RemoveARole(UserRolePairModel pairing)
         {
+            string loggedInUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var loggedInUserId = _userData.GetUserById(loggedInUser).FirstOrDefault();
+
             var user = await _userManager.FindByIdAsync(pairing.UserId);
+
+            //we put the log here so incase it crashes we want it to tell us someone tried to switch users role more info in AddARole(UserRolePairModel pairing)
+            _logger.LogInformation("Admin {Admin} remove user {User} to role {Role}"
+                , loggedInUserId, user.Id, pairing.RoleName);
+
             await _userManager.RemoveFromRoleAsync(user, pairing.RoleName);
 
             
