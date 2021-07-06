@@ -455,4 +455,5 @@ do a find all and enter new
 Set up the excpetion method in the catch blocks 1st pass in a DI in of ILogger<SqlDataAccess> then use the LogError() in the catch block
 Add log to the user controller we want more info when a user addes a role or takes away use the method that is there to get user by Id store the info in the logger
 prop
+Move secretKey to appSetting.json the should be random and not guessable so MySecretKeyIsSecretSoDoNotTell is a bad key
 
