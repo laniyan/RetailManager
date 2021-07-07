@@ -457,3 +457,12 @@ Add log to the user controller we want more info when a user addes a role or tak
 prop
 Move secretKey to appSetting.json the should be random and not guessable so MySecretKeyIsSecretSoDoNotTell is a bad key
 
+Add and set up Azure Devops board
+create new project put name the fill out the rest
+create tickes and add task to them so you remenber the step to finish set up ci good i.e there create tickets for all to do's in Roadmap
+we added Web-based Inventory Control System as a epic
+
+Move code from github to azure
+we have to go to repo and the push an exisiting repo we cant use init with readme coz thats a starting point and git cant have to starting point sinces we have
+already started our repo, so copy the clip board and exe it in the command line but 1st have to remove origin using git remote rm origin to take the link away from
+github then use the azure snippnet and then push to the new remote location git push -u origin --all

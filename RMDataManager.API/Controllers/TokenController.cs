@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using RMDataManager.API.Data;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
@@ -19,11 +21,13 @@ namespace RMDataManager.API.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _config;
 
-        public TokenController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public TokenController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IConfiguration config)
         {
             _context = context;
             _userManager = userManager;
+            _config = config;
         }
 
         [Route("/token")]
@@ -89,12 +93,13 @@ namespace RMDataManager.API.Controllers
             var token = new JwtSecurityToken(//create a new JWT
                 new JwtHeader(//instal a header
                     new SigningCredentials(//and create signing credentials and we use the algo for signing not encrypting it (SecurityAlgorithms.HmacSha256)
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsSecretSoDoNotTell")),//this is the key we use to sign it it
-                                                                                        /*takes the string and codes it into utf and gets the bytes of that and
-                                                                                          thats the key it uses to sign this token this key is very important its a secret key
-                                                                                          if the key was to get out then somebody else could using H Mac sha-256 encode a new 
-                                                                                          claim so we make it a long random string and eventrually store it in azure key vaults
-                                                                                          for testing purposes we would leave it here or use appsettings.json (Tim Corey vid 34 43:00)*/ 
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetValue<string>("Secrets:SecurityKey"))),//this is the key we use to
+                                                                                                                                 //sign it it use to be "MySecretKeyIsSecretSoDoNotTell" now weve put it in appsetting
+                        /*takes the string and codes it into utf and gets the bytes of that and
+                          thats the key it uses to sign this token this key is very important its a secret key
+                          if the key was to get out then somebody else could using H Mac sha-256 encode a new 
+                          claim so we make it a long random string and eventrually store it in azure key vaults
+                          for testing purposes we would leave it here or use appsettings.json (Tim Corey vid 34 43:00)*/
                         SecurityAlgorithms.HmacSha256)//H mac sha 256 security algo 
                         ),
                 new JwtPayload(claims));//this is are whole claim the payload like what we send in the body of a request

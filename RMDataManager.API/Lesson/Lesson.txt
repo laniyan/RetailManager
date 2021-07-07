@@ -77,3 +77,6 @@ breakdown(Tim corey display product 17 2:00 ) to a db design problem listen to i
 
 breakdown(Tim corey vid 36 20:00 ) of how to add a custom or specific package source to nuget like we did with alpha he did it forr calibure and that gave 
 him access to there master branch version the alpha and bata version that you dont get with the nug.org add package manager
+
+The port changed when I switched to azure repo we are set up for port 5001 so the app didnt work to ture it back I have to set the api project to start project 
+then run it on its own and then set it back to multi start (Tim Corey vid 40 24:00 )
